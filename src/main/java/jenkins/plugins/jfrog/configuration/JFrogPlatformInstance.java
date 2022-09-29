@@ -16,8 +16,6 @@ public class JFrogPlatformInstance implements Serializable {
     private String artifactoryUrl;
     private String distributionUrl;
     private String xrayUrl;
-    private String missionControlUrl;
-    private String pipelinesUrl;
     private String id;
     private CredentialsConfig credentialsConfig;
 
@@ -26,19 +24,13 @@ public class JFrogPlatformInstance implements Serializable {
     }
 
     @DataBoundConstructor
-    public JFrogPlatformInstance(String serverId, String platformUrl, CredentialsConfig credentialsConfig, String artifactoryUrl, String distributionUrl, String xrayUrl, String missionControlUrl, String pipelinesUrl) {
+    public JFrogPlatformInstance(String serverId, String platformUrl, CredentialsConfig credentialsConfig, String artifactoryUrl, String distributionUrl, String xrayUrl) {
         this.id = serverId;
         this.url = StringUtils.isNotEmpty(platformUrl) ? StringUtils.removeEnd(platformUrl, "/") : null;
         this.credentialsConfig = credentialsConfig;
         this.artifactoryUrl = addUrlSuffix(artifactoryUrl, this.url, "artifactory");
         this.distributionUrl = addUrlSuffix(distributionUrl, this.url, "distribution");
-        ;
         this.xrayUrl = addUrlSuffix(xrayUrl, this.url, "xray");
-        ;
-        this.missionControlUrl = addUrlSuffix(missionControlUrl, this.url, "mc");
-        ;
-        this.pipelinesUrl = addUrlSuffix(pipelinesUrl, this.url, "pipelines");
-        ;
     }
 
     /**
@@ -115,19 +107,4 @@ public class JFrogPlatformInstance implements Serializable {
         this.xrayUrl = xrayUrl;
     }
 
-    public String getMissionControlUrl() {
-        return missionControlUrl;
-    }
-
-    public void setMissionControlUrl(String missionControlUrl) {
-        this.missionControlUrl = missionControlUrl;
-    }
-
-    public String getPipelinesUrl() {
-        return pipelinesUrl;
-    }
-
-    public void setPipelinesUrl(String pipelinesUrl) {
-        this.pipelinesUrl = pipelinesUrl;
-    }
 }

@@ -146,8 +146,6 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         argsBuilder.add("--artifactory-url=" + jfrogPlatformInstance.getArtifactoryUrl());
         argsBuilder.add("--distribution-url=" + jfrogPlatformInstance.getDistributionUrl());
         argsBuilder.add("--xray-url=" + jfrogPlatformInstance.getXrayUrl());
-        argsBuilder.add("--mission-control-url=" + jfrogPlatformInstance.getMissionControlUrl());
-        argsBuilder.add("--pipelines-url=" + jfrogPlatformInstance.getPipelinesUrl());
 
         argsBuilder.add("--interactive=false");
         // The installation process takes place more than once per build, so we will configure the same server ID several times.

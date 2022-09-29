@@ -7,9 +7,9 @@
     <st:adjunct includes="lib.jfrog.repos.credentials"/>
     <f:section title="JFrog Plugin Configuration">
         <f:entry title="JFrog Platform Instances"
-                 description="List of JFrog platform instances that projects will want to deploy artifacts and build info">
+                 description="List of JFrog Platform instances to be used by jobs">
             <f:repeatable name="jfrogInstances" var="instance" items="${descriptor.jfrogInstances}"
-                          header="JFrog server details" add="${%Add JFrog Platform Instance}">
+                          header="JFrog Platform details" add="${%Add JFrog Platform Instance}">
                 <input type="hidden" name="stapler-class"
                        value="jenkins.plugins.jfrog.configuration.JFrogPlatformInstance"/>
                 <r:blockWrapper style="width:100%">
@@ -41,12 +41,6 @@
                             </f:entry>
                             <f:entry title="JFrog Xray URL">
                                 <f:textbox field="xrayUrl" value="${instance.xrayUrl}"/>
-                            </f:entry>
-                            <f:entry title="JFrog Mission Control URL">
-                                <f:textbox field="missionControlUrl" value="${instance.missionControlUrl}"/>
-                            </f:entry>
-                            <f:entry title="JFrog Pipelines URL">
-                                <f:textbox field="pipelinesUrl" value="${instance.pipelinesUrl}"/>
                             </f:entry>
                         </f:section>
                     </f:advanced>
