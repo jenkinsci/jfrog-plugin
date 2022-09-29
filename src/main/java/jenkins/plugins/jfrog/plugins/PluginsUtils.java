@@ -19,53 +19,6 @@ import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCreden
 
 
 public class PluginsUtils {
-    //    public static final String MULTIJOB_PLUGIN_ID = "jenkins-multijob-plugin";
-//    public static final String PROMOTION_BUILD_PLUGIN_CLASS = "PromotionProcess";
-//    public static final String JIRA_REST_SERVERINFO_ENDPOINT = "rest/api/2/serverInfo";
-//
-//    private static ObjectMapper mapper;
-//
-//    /**
-//     * Fill credentials related to a Jenkins job.
-//     *
-//     * @param project - The jenkins project
-//     * @return credentials list
-//     */
-//    public static ListBoxModel fillPluginProjectCredentials(Item project) {
-//        if (project == null || !project.hasPermission(Item.CONFIGURE)) {
-//            return new StandardListBoxModel();
-//        }
-//        return fillPluginCredentials(project);
-//    }
-//
-//    /**
-//     * Populate credentials list from the Jenkins Credentials plugin. In use in UI jobs and in the Global configuration.
-//     *
-//     * @param project - Jenkins project
-//     * @return credentials list
-//     */
-//    public static ListBoxModel fillPluginCredentials(Item project) {
-//        List<DomainRequirement> domainRequirements = Collections.emptyList();
-//        return new StandardListBoxModel()
-//                .includeEmptyValue()
-//                // Add project scoped credentials:
-//                .includeMatchingAs(ACL.SYSTEM, project, StandardCredentials.class, domainRequirements,
-//                        CredentialsMatchers.anyOf(
-//                                CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
-//                                CredentialsMatchers.instanceOf(StringCredentials.class),
-//                                CredentialsMatchers.instanceOf(StandardCertificateCredentials.class)
-//                        ))
-//                // Add Jenkins system scoped credentials
-//                .includeMatchingAs(ACL.SYSTEM, Jenkins.get(), StandardCredentials.class, domainRequirements,
-//                        CredentialsMatchers.anyOf(
-//                                CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
-//                                CredentialsMatchers.instanceOf(StringCredentials.class),
-//                                CredentialsMatchers.instanceOf(StandardCertificateCredentials.class)
-//                        )
-//                );
-//    }
-//
-//
     public static StringCredentials accessTokenCredentialsLookup(String credentialsId) {
         return CredentialsMatchers.firstOrNull(
                 lookupCredentials(StringCredentials.class, (Item) null),

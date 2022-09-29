@@ -34,7 +34,6 @@ public class PreemptiveAuth implements HttpRequestInterceptor {
         if (!shouldSetAuthScheme(request, context)) {
             return;
         }
-
         HttpClientContext finalContext = (HttpClientContext) context;
         AuthState authState = finalContext.getTargetAuthState();
         // If no auth scheme available yet, try to initialize it preemptively
@@ -78,62 +77,6 @@ public class PreemptiveAuth implements HttpRequestInterceptor {
         }
     }
 }
-//
-///**
-// * Class to handle retries when 5xx errors occurs.
-// */
-//
-//private class PreemptiveRetryStrategy implements ServiceUnavailableRetryStrategy {
-//
-//    @Override
-//    public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
-//        // Code 500 means an unexpected behavior of Artifactory, thus we should not retry.
-//        if (response.getStatusLine().getStatusCode() > 500) {
-//            HttpClientContext clientContext = HttpClientContext.adapt(context);
-////            log.warn("Error occurred for request " + clientContext.getRequest().getRequestLine().toString() +
-////                    ". Received status code " + response.getStatusLine().getStatusCode() +
-////                    " and message: " + response.getStatusLine().getReasonPhrase() + ".");
-////            if (executionCount <= connectionRetries) {
-////                log.warn("Attempting retry #" + executionCount);
-////                return true;
-////            }
-//        }
-//
-//        return false;
-//    }
-//
-//    @Override
-//    public long getRetryInterval() {
-//        return 0;
-//    }
-//}
-
-///**
-// * Class to handle retries when exception occurs.
-// */
-//
-//private class PreemptiveRetryHandler extends DefaultHttpRequestRetryHandler {
-//
-//    PreemptiveRetryHandler(int connectionRetries) {
-//        super(connectionRetries, REQUEST_SENT_RETRY_ENABLED, getNonRetriableClasses());
-//    }
-//
-//    @Override
-//    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
-//        HttpClientContext clientContext = HttpClientContext.adapt(context);
-//        log.warn("Error occurred for request " + clientContext.getRequest().getRequestLine().toString() + ": " + exception.getMessage() + ".");
-//        if (executionCount > connectionRetries) {
-//            return false;
-//        }
-//        boolean shouldRetry = super.retryRequest(exception, executionCount, context);
-//        if (shouldRetry) {
-//            log.warn("Attempting retry #" + executionCount);
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//}
 
 /**
  * Class for performing redirection for the following status codes:
@@ -158,7 +101,6 @@ class PreemptiveRedirectStrategy extends DefaultRedirectStrategy {
         String originalHost = getHost(request);
         context.setAttribute(ORIGINAL_HOST_CONTEXT_PARAM, originalHost);
         URI uri = getLocationURI(request, response, context);
-       // log.debug("Redirecting to " + uri);
         return RequestBuilder.copy(request).setUri(uri).build();
     }
     /**
@@ -181,10 +123,8 @@ class PreemptiveRedirectStrategy extends DefaultRedirectStrategy {
     protected boolean isRedirectable(String method) {
         String message = "The method " + method;
         if (redirectableMethods.contains(method.toLowerCase())) {
-            //log.debug(message + " can be redirected.");
             return true;
         }
-        //log.error(message + " cannot be redirected.");
         return false;
     }
 }
