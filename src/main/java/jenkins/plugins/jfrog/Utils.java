@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
+import static jenkins.plugins.jfrog.OsUtils.isWindows;
+
 /**
  * @author gail
  */
@@ -52,6 +54,12 @@ public class Utils {
         return env;
     }
 
+    public static String getJfrogCliBinaryName(){
+        if (isWindows()){
+            return BINARY_NAME + ".exe";
+        }
+        return BINARY_NAME;
+    }
     /**
      * Delete temp jfrog cli home directory associated with the build number.
      * @param ws           - The workspace
@@ -98,7 +106,7 @@ public class Utils {
     private static boolean shouldDownloadToll(FilePath toolLocation, String id) throws IOException, InterruptedException {
         // An empty id indicates the latest version - we would like to override and reinstall the latest tool in this case.
         if (!id.isEmpty()){
-            if (toolLocation.child(id).child(BINARY_NAME).exists()) {
+            if (toolLocation.child(id).child(getJfrogCliBinaryName()).exists()) {
                 return false;
             }
         }
@@ -135,11 +143,12 @@ public class Utils {
         if (version.isEmpty()){
             version = RELEASES;
         }
-        String suffix = "/"+REPOSITORY+"/v2-jf/"+version+"/jfrog-cli-"+osDetails+"/"+BINARY_NAME;
+        String binaryName = getJfrogCliBinaryName();
+        String suffix = "/"+REPOSITORY+"/v2-jf/"+version+"/jfrog-cli-"+osDetails+"/"+binaryName;
         if (version.equals(RELEASES)){
-            log.getLogger().printf("Download \'%s\' latest version from: %s\n", BINARY_NAME, instance.getArtifactoryUrl()+suffix);
+            log.getLogger().printf("Download \'%s\' latest version from: %s\n", binaryName, instance.getArtifactoryUrl()+suffix);
         } else {
-            log.getLogger().printf("Download \'%s\' version %s from: %s\n", BINARY_NAME, version, instance.getArtifactoryUrl()+suffix);
+            log.getLogger().printf("Download \'%s\' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl()+suffix);
         }
         // Getting credentials
         String username = "", password = "", accessToken = "";
@@ -156,7 +165,7 @@ public class Utils {
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 throw new IOException("Failed downloading JFrog CLI binary: "+response.getStatusLine());
             }
-            File file = new File(f, BINARY_NAME);
+            File file = new File(f, binaryName);
             Files.copy(input,file.toPath(),StandardCopyOption.REPLACE_EXISTING);
             if (!file.setExecutable(true)) {
                 throw new IOException("No permission to add execution permission to binary");

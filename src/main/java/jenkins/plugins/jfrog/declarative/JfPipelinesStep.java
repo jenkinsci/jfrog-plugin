@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static jenkins.plugins.jfrog.JfrogInstallation.JFROG_BINARY_PATH;
-import static jenkins.plugins.jfrog.Utils.BINARY_NAME;
+import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**
@@ -60,7 +60,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         workspace.mkdirs();
         // Build the 'jf' command
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
-        String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), BINARY_NAME).toString();
+        String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName()).toString();
         argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add(args.split(" "));
 

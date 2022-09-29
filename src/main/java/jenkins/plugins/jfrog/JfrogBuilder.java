@@ -52,7 +52,7 @@ public class JfrogBuilder extends Builder {
 
         @Override
         public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            return super.newInstance(req, formData);    //To change body of overridden methods use File | Settings | File Templates.
+            return super.newInstance(req, formData);
         }
 
         @Override
