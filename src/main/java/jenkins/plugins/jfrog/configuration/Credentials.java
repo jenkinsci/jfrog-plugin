@@ -9,7 +9,6 @@ import java.io.Serializable;
  * Credentials model object
  */
 public class Credentials implements Serializable {
-    private static final long serialVersionUID = 1L;
     public static final Credentials EMPTY_CREDENTIALS = new Credentials(StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
     private Secret username;
     private Secret password;
