@@ -34,7 +34,7 @@ class JfrogInstallationTest extends PipelineTestBase {
 //        configureJfrogCli();
 //        WorkflowRun job = runPipeline(jenkins, "");
 //        assertTrue(job.getLog().contains("jf version "+jfrogCliTestVersion));
-//        // TODO remove, only for testing
+//        // remove, only for testing
 //        while (true) ;
 //    }
 
@@ -65,7 +65,7 @@ class JfrogInstallationTest extends PipelineTestBase {
         String file = "pipeline {\n" +
                 "    agent any\n" +
                 "    tools {\n" +
-                "        \"jenkins.plugins.jfrog.JfrogInstallation\" \"cli\"\n" +
+                "        \"jfrog\" \"cli\"\n" +
                 "    }\n" +
                 "    stages {\n" +
                 "        stage('Build') {\n" +
