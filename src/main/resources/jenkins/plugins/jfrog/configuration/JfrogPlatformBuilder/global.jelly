@@ -9,28 +9,22 @@
                  description="List of JFrog platform instances that projects will want to deploy artifacts and build info">
             <f:repeatable name="jfrogInstances" var="instance" items="${descriptor.jfrogInstances}"
                           header="JFrog server details" add="${%Add JFrog Platform Instance}">
-                <!--                TODO-->
                 <input type="hidden" name="stapler-class"
                        value="jenkins.plugins.jfrog.configuration.JFrogPlatformInstance"/>
-
                 <r:blockWrapper style="width:100%">
-
                     <f:entry title="Server ID">
-                        <f:textbox field="serverId" value="${instance.serverId}" use="required"/>
+                        <f:textbox field="serverId" value="${instance.serverId}"/>
                     </f:entry>
-
                     <f:entry title="JFrog Platform URL" field="platformUrl">
                         <f:textbox field="platformUrl" value="${instance.url}"/>
                     </f:entry>
-
-                    <f:section field="credentialsConfig"
-                               name="credentialsConfig">
+                    <f:section name="credentialsConfig">
                         <f:block>
                             <input type="hidden" name="stapler-class"
                                    value="jenkins.plugins.jfrog.configuration.CredentialsConfig"/>
                             <r:blockWrapper style="width:100%"
                                             id="credentialsConfig${instance.credentialsConfig}">
-                                <f:entry title="${%Credentials}" name="credentialsId" field="credentialsId">
+                                <f:entry title="${%Credentials}" field="credentialsId">
                                     <c:select default="${instance.credentialsConfig.credentialsId}"/>
                                 </f:entry>
                             </r:blockWrapper>
@@ -42,19 +36,15 @@
                                 <f:textbox field="artifactoryUrl" value="${instance.artifactoryUrl}"/>
                             </f:entry>
                             <f:entry title="JFrog Distribution URL">
-                                <!--                                     help="/plugin/artifactory/help/ArtifactoryBuilder/help-distribution-url.html">-->
                                 <f:textbox field="distributionUrl" value="${instance.distributionUrl}"/>
                             </f:entry>
                             <f:entry title="JFrog Xray URL">
-                                <!--                                     help="/plugin/artifactory/help/ArtifactoryBuilder/help-timeout.html">-->
                                 <f:textbox field="xrayUrl" value="${instance.xrayUrl}"/>
                             </f:entry>
                             <f:entry title="JFrog Mission Control URL">
-                                <!--                                     help="/plugin/artifactory/help/ArtifactoryBuilder/help-timeout.html">-->
                                 <f:textbox field="missionControlUrl" value="${instance.missionControlUrl}"/>
                             </f:entry>
                             <f:entry title="JFrog Pipelines URL">
-                                <!--                                     help="/plugin/artifactory/help/ArtifactoryBuilder/help-timeout.html">-->
                                 <f:textbox field="pipelinesUrl" value="${instance.pipelinesUrl}"/>
                             </f:entry>
                         </f:section>

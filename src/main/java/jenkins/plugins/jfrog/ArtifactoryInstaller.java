@@ -13,30 +13,34 @@ import java.util.List;
 
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
 
+/**
+ * Download and install Jfrog CLI from a remote artifactory (instead of the default 'releases.jfrog.io')
+ *
+ * @author gail
+ */
 public class ArtifactoryInstaller extends BinaryInstaller {
 
-    public final String id;
-
+    public final String serverId;
     public final String repository;
 
     @DataBoundConstructor
     public ArtifactoryInstaller(String id, String repository) {
         super(null);
-        this.id = id;
+        this.serverId = id;
         this.repository = repository;
     }
 
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
-        JFrogPlatformInstance server = getSpecificServer(id);
+        JFrogPlatformInstance server = getSpecificServer(serverId);
         if (server == null){
-            throw new IOException("Server id \'"+id+"\' doesn't exists.");
+            throw new IOException("Server id \'"+serverId+"\' doesn't exists.");
         }
         return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, "", server, repository);
     }
 
     /**
-     * Provide all configured server ids and return the specific one with the given id.
+     * Look for all configured server ids and return the specific one matched the given id.
      */
     private JFrogPlatformInstance getSpecificServer(String id) {
         List<JFrogPlatformInstance> jfrogInstances = getJFrogPlatformInstances();

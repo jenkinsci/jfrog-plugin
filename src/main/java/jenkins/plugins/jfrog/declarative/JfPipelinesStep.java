@@ -27,11 +27,13 @@ import static jenkins.plugins.jfrog.JfrogInstallation.JFROG_BINARY_PATH;
 import static jenkins.plugins.jfrog.Utils.BINARY_NAME;
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
 
+/**
+ * @author gail
+ */
 @SuppressWarnings("unused")
 public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     static final String STEP_NAME = "jf";
     static final String JFROG_CLI_HOME_DIR = "JFROG_CLI_HOME_DIR";
-
     protected String args;
 
     @DataBoundConstructor
@@ -43,6 +45,16 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         return args;
     }
 
+    /**
+     * Build and run a 'jf' command.
+     * @param run a build this is running as a part of
+     * @param workspace a workspace to use for any file operations
+     * @param env environment variables applicable to this step
+     * @param launcher a way to start processes
+     * @param listener a place to send output
+     * @throws InterruptedException
+     * @throws IOException
+     */
     @Override
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
         workspace.mkdirs();
@@ -75,7 +87,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
 
     /**
      * Before we run a 'jf' command for the first time, we want to configure all servers first.
-     * We know that all servers have already been configured if there is a "jfrog-cli.conf" file in the ".jfrog" directory.
+     * We know that all servers have already been configured if there is a "jfrog-cli.conf" file in the ".jfrog" home directory.
      * @jfrogHomeTempDir the temp ".jfrog" directory path.
      */
     private boolean shouldConfig(FilePath jfrogHomeTempDir) throws IOException, InterruptedException {
@@ -137,7 +149,6 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     @Symbol("jf")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-
         @Override
         public String getDisplayName() {
             return "jf command";

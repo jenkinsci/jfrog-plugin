@@ -9,8 +9,6 @@ import java.io.Serializable;
  * Configuration for all available credentials providers.
  */
 public class CredentialsConfig implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     private Credentials credentials;
     private String credentialsId;
 

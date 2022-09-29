@@ -5,9 +5,6 @@ import hudson.model.AbstractProject;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-
-import hudson.tools.Messages;
-import org.jvnet.localizer.ResourceBundleHolder;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -28,7 +25,6 @@ public class JfrogBuilder extends Builder {
     public JfrogBuilder(String task) {
         this.task = task;
     }
-
 
     @Override
     public Descriptor getDescriptor() {
