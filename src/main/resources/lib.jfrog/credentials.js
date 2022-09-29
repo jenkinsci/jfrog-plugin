@@ -21,14 +21,6 @@ function setNewDisplayStyle(elements, display) {
         elements[elementsIndex].style.display = display;
 }
 
-// function toggleLegacyUsernamePasswordFromView(hide) {
-//     var newDisplayStyle = hide ? 'none' : '';
-//     var resolverElements = getElementsWithIdPrefix(legacyResolverPrefix);
-//     setNewDisplayStyle(resolverElements, newDisplayStyle);
-//     var deployerElements = getElementsWithIdPrefix(legacyDeployerPrefix);
-//     setNewDisplayStyle(deployerElements, newDisplayStyle);
-// }
-
 /**
  * This will return an array of HTML elements with Id that start with prefix
  * @param prefix Id prefix to search for

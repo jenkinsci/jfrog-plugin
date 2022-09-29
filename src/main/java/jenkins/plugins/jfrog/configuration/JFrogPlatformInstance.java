@@ -30,23 +30,28 @@ public class JFrogPlatformInstance {
         this.url = StringUtils.isNotEmpty(platformUrl) ? StringUtils.removeEnd(platformUrl, "/") : null;
         this.credentialsConfig = credentialsConfig;
         this.artifactoryUrl = addUrlSuffix(artifactoryUrl, this.url, "artifactory");
-        this.distributionUrl = addUrlSuffix(distributionUrl, this.url, "distribution");;
-        this.xrayUrl = addUrlSuffix(xrayUrl, this.url, "xray");;
-        this.missionControlUrl = addUrlSuffix(missionControlUrl, this.url, "mc");;
-        this.pipelinesUrl = addUrlSuffix(pipelinesUrl, this.url, "pipelines");;
+        this.distributionUrl = addUrlSuffix(distributionUrl, this.url, "distribution");
+        ;
+        this.xrayUrl = addUrlSuffix(xrayUrl, this.url, "xray");
+        ;
+        this.missionControlUrl = addUrlSuffix(missionControlUrl, this.url, "mc");
+        ;
+        this.pipelinesUrl = addUrlSuffix(pipelinesUrl, this.url, "pipelines");
+        ;
     }
 
     /**
      * Returns the list of {@link JFrogPlatformInstance} configured.
      * Used by Jenkins Jelly for displaying values.
+     *
      * @return can be empty but never null.
      */
     public List<JFrogPlatformInstance> getJfrogInstances() {
         return getJFrogPlatformInstances();
     }
 
-    private String addUrlSuffix(String Url, String platformUrl, String suffix){
-       return StringUtils.isNotEmpty(Url) ? Url : platformUrl + "/" + suffix;
+    private String addUrlSuffix(String Url, String platformUrl, String suffix) {
+        return StringUtils.isNotEmpty(Url) ? Url : platformUrl + "/" + suffix;
     }
 
     public String getId() {

@@ -25,7 +25,7 @@ import net.sf.json.JSONObject;
  * @author gail
  */
 public class JfrogInstallation extends ToolInstallation
-       implements NodeSpecific<JfrogInstallation>, EnvironmentSpecific<JfrogInstallation> {
+        implements NodeSpecific<JfrogInstallation>, EnvironmentSpecific<JfrogInstallation> {
 
     @DataBoundConstructor
     public JfrogInstallation(String name, String home, List<? extends ToolProperty<?>> properties) {

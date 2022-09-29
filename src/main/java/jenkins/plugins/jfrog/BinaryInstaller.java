@@ -44,6 +44,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
 
         /**
          * function that creates a {@link DownloadService.Downloadable}.
+         *
          * @return a downloadable object
          */
         public DownloadService.Downloadable createDownloadable() {

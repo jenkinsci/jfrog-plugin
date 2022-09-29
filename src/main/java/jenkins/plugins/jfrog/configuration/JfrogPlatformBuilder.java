@@ -16,10 +16,11 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.interceptor.RequirePOST;
+
 import java.util.*;
 
 /**
- *  @author gail
+ * @author gail
  */
 public class JfrogPlatformBuilder extends GlobalConfiguration {
 
@@ -110,13 +111,13 @@ public class JfrogPlatformBuilder extends GlobalConfiguration {
                 throw new FormException("Please set the Instance ID.", "ServerID");
             }
 
-        if (isInstanceDuplicated(jfrogInstances)) {
-            throw new FormException("The JFrog server ID you have entered is already configured", "Server ID");
-        }
+            if (isInstanceDuplicated(jfrogInstances)) {
+                throw new FormException("The JFrog server ID you have entered is already configured", "Server ID");
+            }
 
-        if (isEmptyUrl(jfrogInstances)) {
-            throw new FormException("Please set the The JFrog Platform URL", "URL");
-        }
+            if (isEmptyUrl(jfrogInstances)) {
+                throw new FormException("Please set the The JFrog Platform URL", "URL");
+            }
             autoFillPlatformServers(jfrogInstances);
             setJfrogInstances(jfrogInstances);
         }

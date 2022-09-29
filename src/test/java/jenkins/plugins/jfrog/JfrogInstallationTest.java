@@ -21,9 +21,10 @@ import java.util.List;
 class JfrogInstallationTest extends PipelineTestBase {
     // Jfrog CLI version which is accessible for all operating systems
     public static final String jfrogCliTestVersion = "2.6.1";
+
     /**
      * Adds Jfrog cli tool as a global tool and verify installation.
-//     * @param jenkins Jenkins instance Injected automatically.
+     * //     * @param jenkins Jenkins instance Injected automatically.
      */
 //    @Test
 //    public void testJfrogCliInstallation(JenkinsRule jenkins) throws Exception{
@@ -34,22 +35,22 @@ class JfrogInstallationTest extends PipelineTestBase {
 //        // remove, only for testing
 //        while (true) ;
 //    }
-
     public static JfrogInstallation configureJfrogCli() throws IOException {
         Saveable NOOP = () -> {
         };
         DescribableList<ToolProperty<?>, ToolPropertyDescriptor> r = new DescribableList<>(NOOP);
         List<ReleasesInstaller> installers = new ArrayList<>();
         installers.add(new ReleasesInstaller(jfrogCliTestVersion));
-            r.add(new InstallSourceProperty(installers));
+        r.add(new InstallSourceProperty(installers));
         JfrogInstallation jf = new JfrogInstallation("cli", "", r);
         Jenkins.get().getDescriptorByType(JfrogInstallation.Descriptor.class).setInstallations(jf);
         return jf;
     }
+
     /**
      * Run pipeline script.
      *
-     * @param name                     - Pipeline name from 'jenkins-artifactory-plugin/src/test/resources/integration/pipelines'
+     * @param name - Pipeline name from 'jenkins-artifactory-plugin/src/test/resources/integration/pipelines'
      * @return the Jenkins job
      */
     WorkflowRun runPipeline(JenkinsRule jenkins, String name) throws Exception {

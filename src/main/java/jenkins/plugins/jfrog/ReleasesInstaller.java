@@ -29,7 +29,7 @@ public class ReleasesInstaller extends BinaryInstaller {
 
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
-        JFrogPlatformInstance server =  new JFrogPlatformInstance(StringUtils.EMPTY, StringUtils.EMPTY, null, ARTIFACTORY_URL, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
+        JFrogPlatformInstance server = new JFrogPlatformInstance(StringUtils.EMPTY, StringUtils.EMPTY, null, ARTIFACTORY_URL, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY);
         return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, id, server, REPOSITORY);
     }
 
@@ -41,7 +41,7 @@ public class ReleasesInstaller extends BinaryInstaller {
 
         @Override
         public boolean isApplicable(Class<? extends ToolInstallation> toolType) {
-            return toolType== JfrogInstallation.class;
+            return toolType == JfrogInstallation.class;
         }
     }
 }

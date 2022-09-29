@@ -2,6 +2,7 @@ package jenkins.plugins.jfrog.configuration;
 
 import hudson.util.Secret;
 import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 
 
@@ -17,8 +18,8 @@ public class Credentials implements Serializable {
     /**
      * Main constructor
      *
-     * @param username Username
-     * @param password Clear-text password.
+     * @param username    Username
+     * @param password    Clear-text password.
      * @param accessToken Clear-text accessToken.
      */
     public Credentials(String username, String password, String accessToken) {

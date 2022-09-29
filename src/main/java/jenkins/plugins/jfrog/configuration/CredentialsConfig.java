@@ -1,4 +1,5 @@
 package jenkins.plugins.jfrog.configuration;
+
 import hudson.util.Secret;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -18,7 +19,7 @@ public class CredentialsConfig implements Serializable {
      */
     @DataBoundConstructor
     public CredentialsConfig(String username, String password, String accessToken, String credentialsId) {
-        this.credentials = new Credentials(username, password,accessToken);
+        this.credentials = new Credentials(username, password, accessToken);
         this.credentialsId = credentialsId;
     }
 

@@ -44,7 +44,7 @@ public class ArtifactoryClient implements AutoCloseable {
     private final TaskListener logger;
 
     public ArtifactoryClient(String artifactoryUrl, String username, String password, String accessToken, HttpProxyDetails proxy, TaskListener logger) {
-       // this.socketTimeoutMillis = socketTimeoutMillis;
+        // this.socketTimeoutMillis = socketTimeoutMillis;
         this.artifactoryUrl = StringUtils.removeEnd(artifactoryUrl, "/");
         this.logger = logger;
         this.httpClient = createHttpClient(proxy);

@@ -54,14 +54,16 @@ public class Utils {
         return env;
     }
 
-    public static String getJfrogCliBinaryName(){
-        if (isWindows()){
+    public static String getJfrogCliBinaryName() {
+        if (isWindows()) {
             return BINARY_NAME + ".exe";
         }
         return BINARY_NAME;
     }
+
     /**
      * Delete temp jfrog cli home directory associated with the build number.
+     *
      * @param ws           - The workspace
      * @param buildNumber  - The build number
      * @param taskListener - The logger
@@ -72,7 +74,7 @@ public class Utils {
             buildDataDir.deleteRecursive();
             taskListener.getLogger().println(buildDataDir.getRemote() + " deleted");
         } catch (IOException | InterruptedException e) {
-            taskListener.getLogger().println("Failed while attempting to delete build data dir for build number " + buildNumber + "\n"+ e.getMessage());
+            taskListener.getLogger().println("Failed while attempting to delete build data dir for build number " + buildNumber + "\n" + e.getMessage());
         }
     }
 
@@ -105,13 +107,13 @@ public class Utils {
      */
     private static boolean shouldDownloadToll(FilePath toolLocation, String id) throws IOException, InterruptedException {
         // An empty id indicates the latest version - we would like to override and reinstall the latest tool in this case.
-        if (!id.isEmpty()){
+        if (!id.isEmpty()) {
             if (toolLocation.child(id).child(getJfrogCliBinaryName()).exists()) {
                 return false;
             }
         }
         String version = id;
-        if (id.isEmpty()){
+        if (id.isEmpty()) {
             version = LATEST;
         }
         // Delete old versions if exists
@@ -122,10 +124,11 @@ public class Utils {
 
     /**
      * Download and locate the JFrog CLI binary in the specific build home directory.
+     *
      * @param f
      * @param log
-     * @param v version. empty string indicates the latest version.
-     * @param instance JFrogPlatformInstance contains url and credentials needed for the downloading operation.
+     * @param v          version. empty string indicates the latest version.
+     * @param instance   JFrogPlatformInstance contains url and credentials needed for the downloading operation.
      * @param REPOSITORY identifies the repository in Artifactory where the CLIs binary is stored.
      * @throws IOException
      */
@@ -134,39 +137,40 @@ public class Utils {
         String osDetails;
         try {
             osDetails = OsUtils.getOsDetails();
-        } catch (OsUtils.UnsupportedOperatingSystem e) {;
+        } catch (OsUtils.UnsupportedOperatingSystem e) {
+            ;
             throw new IOException(e);
         }
         final String RELEASES = URLEncoder.encode("[RELEASE]", "UTF-8");
         String version = v;
         // An empty string indicates the latest version.
-        if (version.isEmpty()){
+        if (version.isEmpty()) {
             version = RELEASES;
         }
         String binaryName = getJfrogCliBinaryName();
-        String suffix = "/"+REPOSITORY+"/v2-jf/"+version+"/jfrog-cli-"+osDetails+"/"+binaryName;
-        if (version.equals(RELEASES)){
-            log.getLogger().printf("Download \'%s\' latest version from: %s\n", binaryName, instance.getArtifactoryUrl()+suffix);
+        String suffix = "/" + REPOSITORY + "/v2-jf/" + version + "/jfrog-cli-" + osDetails + "/" + binaryName;
+        if (version.equals(RELEASES)) {
+            log.getLogger().printf("Download \'%s\' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
         } else {
-            log.getLogger().printf("Download \'%s\' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl()+suffix);
+            log.getLogger().printf("Download \'%s\' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl() + suffix);
         }
         // Getting credentials
         String username = "", password = "", accessToken = "";
         if (instance.getCredentialsConfig() != null) {
             Credentials credentials = PluginsUtils.credentialsLookup(instance.getCredentialsConfig().getCredentialsId(), null);
-                username = credentials.getUsername();
-                password = credentials.getPassword();
-                accessToken = credentials.getAccessToken();
+            username = credentials.getUsername();
+            password = credentials.getPassword();
+            accessToken = credentials.getAccessToken();
         }
         // Downloading binary from Artifactory
         try (ArtifactoryClient client = new ArtifactoryClient(instance.getArtifactoryUrl(), username, password, accessToken, null, log);
              CloseableHttpResponse response = client.download(suffix)) {
             InputStream input = response.getEntity().getContent();
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
-                throw new IOException("Failed downloading JFrog CLI binary: "+response.getStatusLine());
+                throw new IOException("Failed downloading JFrog CLI binary: " + response.getStatusLine());
             }
             File file = new File(f, binaryName);
-            Files.copy(input,file.toPath(),StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             if (!file.setExecutable(true)) {
                 throw new IOException("No permission to add execution permission to binary");
             }

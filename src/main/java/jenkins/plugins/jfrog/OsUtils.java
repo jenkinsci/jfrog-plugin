@@ -23,7 +23,7 @@ public class OsUtils {
         if (isWindows()) {
             return "windows-amd64";
         } else if (isMac()) {
-            if (OS_ARCH.contains("arm64")){
+            if (OS_ARCH.contains("arm64")) {
                 return "mac-arm64";
             }
             return "mac-386";
@@ -53,8 +53,9 @@ public class OsUtils {
                     return "linux-ppc64le";
             }
         }
-        throw new UnsupportedOperatingSystem("Unsupported operating system: "+OS_ARCH);
+        throw new UnsupportedOperatingSystem("Unsupported operating system: " + OS_ARCH);
     }
+
     public static class UnsupportedOperatingSystem extends Exception {
         public UnsupportedOperatingSystem(String message) {
             super(message);

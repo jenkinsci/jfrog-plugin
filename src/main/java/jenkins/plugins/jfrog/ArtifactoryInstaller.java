@@ -33,8 +33,8 @@ public class ArtifactoryInstaller extends BinaryInstaller {
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         JFrogPlatformInstance server = getSpecificServer(serverId);
-        if (server == null){
-            throw new IOException("Server id \'"+serverId+"\' doesn't exists.");
+        if (server == null) {
+            throw new IOException("Server id \'" + serverId + "\' doesn't exists.");
         }
         return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, "", server, repository);
     }
@@ -62,11 +62,12 @@ public class ArtifactoryInstaller extends BinaryInstaller {
 
         @Override
         public boolean isApplicable(Class<? extends ToolInstallation> toolType) {
-            return toolType== JfrogInstallation.class;
+            return toolType == JfrogInstallation.class;
         }
 
         /**
          * Necessary for displaying all configured server Ids.
+         *
          * @return All pre configured servers Ids
          */
         public List<JFrogPlatformInstance> getServerIds() {

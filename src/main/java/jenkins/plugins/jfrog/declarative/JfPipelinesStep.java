@@ -47,11 +47,12 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
 
     /**
      * Build and run a 'jf' command.
-     * @param run a build this is running as a part of
+     *
+     * @param run       a build this is running as a part of
      * @param workspace a workspace to use for any file operations
-     * @param env environment variables applicable to this step
-     * @param launcher a way to start processes
-     * @param listener a place to send output
+     * @param env       environment variables applicable to this step
+     * @param launcher  a way to start processes
+     * @param listener  a place to send output
      * @throws InterruptedException
      * @throws IOException
      */
@@ -88,6 +89,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     /**
      * Before we run a 'jf' command for the first time, we want to configure all servers first.
      * We know that all servers have already been configured if there is a "jfrog-cli.conf" file in the ".jfrog" home directory.
+     *
      * @jfrogHomeTempDir the temp ".jfrog" directory path.
      */
     private boolean shouldConfig(FilePath jfrogHomeTempDir) throws IOException, InterruptedException {
@@ -126,19 +128,19 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         // Add credentials
         StringCredentials accessTokenCredentials = PluginsUtils.accessTokenCredentialsLookup(credentialsId);
         if (accessTokenCredentials != null) {
-            argsBuilder.addMasked("access-token="+accessTokenCredentials.getSecret().getPlainText());
+            argsBuilder.addMasked("access-token=" + accessTokenCredentials.getSecret().getPlainText());
         } else {
             Credentials credentials = PluginsUtils.credentialsLookup(credentialsId, null);
-            argsBuilder.add("--user="+credentials.getUsername());
-            argsBuilder.addMasked("--password="+credentials.getPassword());
+            argsBuilder.add("--user=" + credentials.getUsername());
+            argsBuilder.addMasked("--password=" + credentials.getPassword());
         }
         // Add URLs
-        argsBuilder.add("--url="+jfrogPlatformInstance.getUrl());
-        argsBuilder.add("--artifactory-url="+jfrogPlatformInstance.getArtifactoryUrl());
-        argsBuilder.add("--distribution-url="+jfrogPlatformInstance.getDistributionUrl());
-        argsBuilder.add("--xray-url="+jfrogPlatformInstance.getXrayUrl());
-        argsBuilder.add("--mission-control-url="+jfrogPlatformInstance.getMissionControlUrl());
-        argsBuilder.add("--pipelines-url="+jfrogPlatformInstance.getPipelinesUrl());
+        argsBuilder.add("--url=" + jfrogPlatformInstance.getUrl());
+        argsBuilder.add("--artifactory-url=" + jfrogPlatformInstance.getArtifactoryUrl());
+        argsBuilder.add("--distribution-url=" + jfrogPlatformInstance.getDistributionUrl());
+        argsBuilder.add("--xray-url=" + jfrogPlatformInstance.getXrayUrl());
+        argsBuilder.add("--mission-control-url=" + jfrogPlatformInstance.getMissionControlUrl());
+        argsBuilder.add("--pipelines-url=" + jfrogPlatformInstance.getPipelinesUrl());
 
         argsBuilder.add("--interactive=false");
         // The installation process takes place more than once per build, so we will configure the same server ID several times.

@@ -103,12 +103,14 @@ class PreemptiveRedirectStrategy extends DefaultRedirectStrategy {
         URI uri = getLocationURI(request, response, context);
         return RequestBuilder.copy(request).setUri(uri).build();
     }
+
     /**
      * Returns a new HashSet of the provided elements.
      */
     public static <E> HashSet<E> newHashSet(E... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
+
     private String getHost(HttpRequest request) {
         URI uri;
         try {
