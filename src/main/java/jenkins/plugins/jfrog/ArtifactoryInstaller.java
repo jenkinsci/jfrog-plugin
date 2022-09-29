@@ -11,6 +11,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 import java.util.List;
 
+import static jenkins.plugins.jfrog.JfrogInstallation.JFROG_BINARY_PATH;
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**

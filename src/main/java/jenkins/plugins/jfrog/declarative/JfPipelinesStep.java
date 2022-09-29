@@ -64,6 +64,9 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName()).toString();
         argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add(args.split(" "));
+        if (!launcher.isUnix()) {
+            argsBuilder = argsBuilder.toWindowsCommand();
+        }
 
         try {
             // Set up a temporary Jfrog CLI home directory for a specific run.
@@ -73,7 +76,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
             Launcher.ProcStarter jfLauncher = launcher.launch().envs(env);
             // Configure all servers, skip if all server ids have already been configured.
             if (shouldConfig(jfrogHomeTempDir)) {
-                configAllServers(jfLauncher, listener);
+                configAllServers(jfLauncher, listener, jfrogBinaryPath, !launcher.isUnix());
             }
             // Running the 'jf' command
             int exitValue = jfLauncher.cmds(argsBuilder).stdout(listener).join();
@@ -105,23 +108,26 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     /**
      * Locally configure all servers that was configured in the Jenkins UI.
      */
-    private void configAllServers(Launcher.ProcStarter launcher, TaskListener listener) throws IOException, InterruptedException {
+    private void configAllServers(Launcher.ProcStarter launcher, TaskListener listener, String jfrogBinaryPath, boolean isWindows) throws IOException, InterruptedException {
         // Config all servers using the 'jf c add' command.
         List<JFrogPlatformInstance> jfrogInstances = getJFrogPlatformInstances();
         if (jfrogInstances != null && jfrogInstances.size() > 0) {
             for (JFrogPlatformInstance jfrogPlatformInstance : jfrogInstances) {
                 // Build 'jf' command
                 ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
-                addConfigArguments(argsBuilder, jfrogPlatformInstance);
+                addConfigArguments(argsBuilder, jfrogPlatformInstance, jfrogBinaryPath);
+                if (isWindows) {
+                    argsBuilder = argsBuilder.toWindowsCommand();
+                }
                 // Running 'jf' command
                 launcher.cmds(argsBuilder).stdout(listener).join();
             }
         }
     }
 
-    private void addConfigArguments(ArgumentListBuilder argsBuilder, JFrogPlatformInstance jfrogPlatformInstance) {
+    private void addConfigArguments(ArgumentListBuilder argsBuilder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath) {
         String credentialsId = jfrogPlatformInstance.getId();
-        argsBuilder.add("jf");
+        argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add("c");
         argsBuilder.add("add");
         argsBuilder.add(credentialsId);
