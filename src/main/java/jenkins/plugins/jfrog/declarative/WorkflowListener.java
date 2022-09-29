@@ -14,10 +14,15 @@ import static jenkins.plugins.jfrog.Utils.getWorkspace;
 
 /**
  * This class implements a declarative pipelines jobs listener.
+ * @author gail
  */
 @SuppressWarnings("unused")
 @Extension
 public class WorkflowListener extends FlowExecutionListener {
+    /**
+     * After the build is complete, clean up the temporary directories.
+     * @param execution The {@link FlowExecution} that has completed.
+     */
     @Override
     public void onCompleted(@NonNull FlowExecution execution) {
         try {
