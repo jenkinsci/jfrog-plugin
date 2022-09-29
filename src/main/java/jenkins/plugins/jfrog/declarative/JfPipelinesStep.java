@@ -14,6 +14,7 @@ import jenkins.plugins.jfrog.configuration.Credentials;
 import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import jenkins.plugins.jfrog.plugins.PluginsUtils;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.plaincredentials.StringCredentials;
@@ -63,7 +64,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName()).toString();
         argsBuilder.add(jfrogBinaryPath);
-        argsBuilder.add(args.split(" "));
+        StringUtils.split(args);
         if (!launcher.isUnix()) {
             argsBuilder = argsBuilder.toWindowsCommand();
         }

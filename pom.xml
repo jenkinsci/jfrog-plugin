@@ -7,7 +7,6 @@
         <artifactId>plugin</artifactId>
         <version>4.47</version>
     </parent>
-
     <properties>
         <jenkins.version>2.346.3</jenkins.version>
     </properties>
@@ -15,7 +14,6 @@
     <packaging>hpi</packaging>
     <name>Jenkins JFrog Plugin</name>
     <version>0.1-SNAPSHOT</version>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -27,7 +25,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
@@ -54,7 +51,6 @@
         <dependency>
             <groupId>org.jenkinsci.plugins</groupId>
             <artifactId>pipeline-model-definition</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -64,11 +60,6 @@
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-durable-task-step</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.jenkins.plugins</groupId>-->
-<!--            <artifactId>lib-durable-task</artifactId>-->
-<!--            <version>51.vb39c166fd9af</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.jenkins-ci</groupId>
             <artifactId>symbol-annotation</artifactId>
@@ -91,15 +82,8 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>plain-credentials</artifactId>
-            <version>1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>ssh-credentials</artifactId>
-            <version>1.18.1</version>
         </dependency>
     </dependencies>
-
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
@@ -120,24 +104,4 @@
             <url>https://repo.jenkins-ci.org/releases/</url>
         </pluginRepository>
     </pluginRepositories>
-    <build>
-        <plugins>
-            <!--Unit tests-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>2.22.2</version>-->
-<!--                <configuration>-->
-<!--                    <systemPropertyVariables>-->
-<!--                        &lt;!&ndash;This will disable JenkinsRule timeout&ndash;&gt;-->
-<!--                        <maven.surefire.debug>true</maven.surefire.debug>-->
-<!--                    </systemPropertyVariables>-->
-<!--                    <includes>-->
-<!--                        <include>**/*Test.java</include>-->
-<!--                    </includes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-        </plugins>
-    </build>
-
 </project>
