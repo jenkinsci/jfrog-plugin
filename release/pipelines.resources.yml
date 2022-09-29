@@ -1,0 +1,18 @@
+resources:
+  - name: jenkinsJFrogSnapshotGit
+    type: GitRepo
+    configuration:
+      path: jfrog/jenkins-jfrog-plugin
+      gitProvider: il_automation
+      branches:
+        include: main
+
+  - name: jenkinsJFrogReleaseGit
+    type: GitRepo
+    configuration:
+      path: jfrog/jenkins-jfrog-plugin
+      gitProvider: il_automation
+      buildOn:
+        commit: false
+      branches:
+        include: main

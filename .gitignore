@@ -1,0 +1,12 @@
+# Target dir
+target
+
+# Work dir
+work
+
+# Intellij IDEA
+.idea
+*.iml
+
+# Mac OS
+.DS_Store

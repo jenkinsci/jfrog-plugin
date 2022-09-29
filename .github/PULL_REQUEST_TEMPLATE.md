@@ -1,0 +1,1 @@
+- [ ] This pull request is created in the [jfrog/jenkins-jfrog-plugin](https://github.com/jfrog/jenkins-jfrog-plugin) repository.
