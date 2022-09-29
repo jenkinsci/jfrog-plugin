@@ -17,9 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
-
-
 // TODO un-comment tests
 class JfrogInstallationTest extends PipelineTestBase {
     // Jfrog CLI version which is accessible for all operating systems
