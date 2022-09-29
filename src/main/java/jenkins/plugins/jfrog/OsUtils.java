@@ -1,5 +1,8 @@
 package jenkins.plugins.jfrog;
 
+/**
+ * @author gail
+ */
 public class OsUtils {
     private static final String OS_NAME = System.getProperty("os.name").toLowerCase();
     private static final String OS_ARCH = System.getProperty("os.name").toLowerCase();

@@ -11,7 +11,6 @@ import jenkins.plugins.jfrog.pipeline.PipelineTestBase;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
@@ -43,8 +42,8 @@ class JfrogInstallationTest extends PipelineTestBase {
         Saveable NOOP = () -> {
         };
         DescribableList<ToolProperty<?>, ToolPropertyDescriptor> r = new DescribableList<>(NOOP);
-        List<JfrogInstaller> installers = new ArrayList<>();
-        installers.add(new JfrogInstaller(jfrogCliTestVersion));
+        List<ReleasesInstaller> installers = new ArrayList<>();
+        installers.add(new ReleasesInstaller(jfrogCliTestVersion));
             r.add(new InstallSourceProperty(installers));
         JfrogInstallation jf = new JfrogInstallation("cli", "", r);
         Jenkins.get().getDescriptorByType(JfrogInstallation.Descriptor.class).setInstallations(jf);

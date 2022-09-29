@@ -19,7 +19,7 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 import java.util.*;
 
 /**
- *  @author gailazar300
+ *  @author gail
  */
 public class JfrogPlatformBuilder extends GlobalConfiguration {
 

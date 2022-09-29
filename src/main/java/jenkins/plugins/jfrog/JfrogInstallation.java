@@ -1,14 +1,11 @@
 package jenkins.plugins.jfrog;
 
-import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
-import hudson.Util;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.slaves.NodeSpecific;
-import hudson.tasks.Maven;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstaller;
@@ -16,7 +13,6 @@ import hudson.tools.ToolProperty;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.jenkinsci.Symbol;
@@ -26,7 +22,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import net.sf.json.JSONObject;
 
 /**
- * @author <a href="mailto:nicolas.deloof@cloudbees.com">Nicolas De loof</a>
+ * @author gail
  */
 public class JfrogInstallation extends ToolInstallation
        implements NodeSpecific<JfrogInstallation>, EnvironmentSpecific<JfrogInstallation> {
@@ -77,9 +73,8 @@ public class JfrogInstallation extends ToolInstallation
         @Override
         public List<? extends ToolInstaller> getDefaultInstallers() {
             List installersList = new ArrayList<>();
-            installersList.add(new JfrogInstaller(null));
-            // TODO remove
-            installersList.add(new ArtifactoryInstaller(null, null));
+            // The default installation will be from 'releases.jfrog.io'
+            installersList.add(new ReleasesInstaller(null));
             return installersList;
         }
     }

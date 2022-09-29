@@ -12,6 +12,11 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Installer for JFrog CLI binary.
+ *
+ * @author gail
+ */
 public abstract class BinaryInstaller extends ToolInstaller {
     protected BinaryInstaller(String label) {
         super(label);

@@ -22,7 +22,7 @@ public class WorkflowListener extends FlowExecutionListener {
     public void onCompleted(@NonNull FlowExecution execution) {
         try {
             WorkflowRun build = getWorkflowRun(execution);
-            Utils.deleteBuildDataDir(getWorkspace(build.getParent()), String.valueOf(build.getNumber()), getTaskListener(execution));
+            Utils.deleteBuildJfrogHomeDir(getWorkspace(build.getParent()), String.valueOf(build.getNumber()), getTaskListener(execution));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
