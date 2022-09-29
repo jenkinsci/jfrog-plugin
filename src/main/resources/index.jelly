@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+    This plugin add support for JFROG, the most advanced build tool ever.
+</div>
