@@ -3,6 +3,7 @@ package jenkins.plugins.jfrog.configuration;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
@@ -10,7 +11,7 @@ import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogP
 /**
  * Represents an instance of jenkins JFrog instance configuration page.
  */
-public class JFrogPlatformInstance {
+public class JFrogPlatformInstance implements Serializable {
     private String url;
     private String artifactoryUrl;
     private String distributionUrl;
