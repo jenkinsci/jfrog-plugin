@@ -64,7 +64,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName()).toString();
         argsBuilder.add(jfrogBinaryPath);
-        StringUtils.split(args);
+        argsBuilder.add(StringUtils.split(args));
         if (!launcher.isUnix()) {
             argsBuilder = argsBuilder.toWindowsCommand();
         }
