@@ -81,20 +81,6 @@ public class ArtifactoryClient implements AutoCloseable {
                 .build();
     }
 
-//    private CloseableHttpClient createHttpClientWithAccessToken(String accessToken) {
-//        RequestConfig.Builder defaultRequestConfig = RequestConfig.custom()
-//                .setConnectTimeout(TIMEOUT_MILLIS)
-//                .setConnectionRequestTimeout(TIMEOUT_MILLIS);
-//
-//       // Header headers = new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer "+accessToken);
-//        return HttpClientBuilder.create()
-//                .setConnectionManager(connectionManager)
-//                .setDefaultRequestConfig(defaultRequestConfig.build())
-//                //.setDefaultHeaders(Collections.singleton(headers))
-//                .addInterceptorFirst(new PreemptiveAuth())
-//                .build();
-//    }
-
     /**
      * Send ping to Artifactory.
      *
