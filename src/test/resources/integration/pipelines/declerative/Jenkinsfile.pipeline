@@ -1,0 +1,17 @@
+package integration.pipelines.declarative
+
+pipeline {
+    agent any
+    tools {
+        "jenkins.plugins.jfrog.JfrogInstallation" "cli"
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building..'
+                sh 'jf -v'
+            }
+        }
+     }
+}
+
