@@ -14,7 +14,7 @@
         <maven.compiler.target>1.11</maven.compiler.target>
     </properties>
     <groupId>io.jenkins.plugins</groupId>
-    <artifactId>jenkins-jfrog</artifactId>
+    <artifactId>jfrog</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <name>JFrog Plugin</name>
