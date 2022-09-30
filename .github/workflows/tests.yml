@@ -1,0 +1,23 @@
+name: Tests
+on: [ push, pull_request ]
+
+jobs:
+  JFrog-Jenkins-Plugin-Tests:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "temurin"
+
+      - name: Run tests
+        run: mvn -V -B -U --no-transfer-progress test
