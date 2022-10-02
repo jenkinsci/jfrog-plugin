@@ -10,6 +10,8 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import net.sf.json.JSONObject;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author <a href="mailto:nicolas.deloof@cloudbees.com">Nicolas De loof</a>
  */
@@ -55,6 +57,7 @@ public class JfrogBuilder extends Builder {
             return super.newInstance(req, formData);
         }
 
+        @Nonnull
         @Override
         public String getDisplayName() {
             return "JFrog";

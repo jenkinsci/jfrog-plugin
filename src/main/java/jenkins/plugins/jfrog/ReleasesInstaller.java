@@ -9,6 +9,7 @@ import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -18,7 +19,7 @@ import java.io.IOException;
  */
 public class ReleasesInstaller extends BinaryInstaller {
     public final String id;
-    public final String ARTIFACTORY_URL = "https://releases.jfrog.io/artifactory";
+    public final String RELEASES_ARTIFACTORY_URL = "https://releases.jfrog.io/artifactory";
     public final String REPOSITORY = "jfrog-cli";
 
     @DataBoundConstructor
@@ -29,12 +30,13 @@ public class ReleasesInstaller extends BinaryInstaller {
 
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
-        JFrogPlatformInstance server = new JFrogPlatformInstance(StringUtils.EMPTY, StringUtils.EMPTY, null, ARTIFACTORY_URL, StringUtils.EMPTY, StringUtils.EMPTY);
+        JFrogPlatformInstance server = new JFrogPlatformInstance(StringUtils.EMPTY, StringUtils.EMPTY, null, RELEASES_ARTIFACTORY_URL, StringUtils.EMPTY, StringUtils.EMPTY);
         return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, id, server, REPOSITORY);
     }
 
     @Extension
     public static final class DescriptorImpl extends BinaryInstaller.DescriptorImpl<ReleasesInstaller> {
+        @Nonnull
         public String getDisplayName() {
             return "Install from releases.jfrog.io";
         }

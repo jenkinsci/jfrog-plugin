@@ -20,6 +20,7 @@ import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
@@ -62,7 +63,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         workspace.mkdirs();
         // Build the 'jf' command
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
-        String jfrogBinaryPath = env.get(JFROG_BINARY_PATH);
+        String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName()).toString();
         argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add(StringUtils.split(args));
         if (!launcher.isUnix()) {
@@ -156,6 +157,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     @Symbol("jf")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+        @Nonnull
         @Override
         public String getDisplayName() {
             return "jf command";

@@ -5,6 +5,7 @@ import hudson.FilePath;
 import hudson.model.Job;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
+import io.jenkins.cli.shaded.org.apache.commons.lang.SystemUtils;
 import jenkins.MasterToSlaveFileCallable;
 import jenkins.plugins.jfrog.artifactoryclient.ArtifactoryClient;
 import jenkins.plugins.jfrog.configuration.Credentials;
@@ -28,12 +29,12 @@ import static jenkins.plugins.jfrog.OsUtils.isWindows;
  */
 public class Utils {
     static final String JFROG_CLI_HOME_DIR = "JFROG_CLI_HOME_DIR";
-    public static final String BINARY_NAME = "jf";
+    private static final String BINARY_NAME = "jf";
     /**
      * The tool's directory name indicates its version.
      * To indicate the latest version, we will use constant name if no version was provided.
      */
-    public static final String LATEST = "latest";
+    private static final String LATEST = "latest";
 
     /**
      * decoded "[RELEASE]" for thee download url
@@ -55,7 +56,7 @@ public class Utils {
     }
 
     public static String getJfrogCliBinaryName() {
-        if (isWindows()) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             return BINARY_NAME + ".exe";
         }
         return BINARY_NAME;
@@ -134,13 +135,7 @@ public class Utils {
      */
     private static void downloadJfrogCli(File f, TaskListener log, String v, JFrogPlatformInstance instance, String REPOSITORY) throws IOException {
         // Getting relevant operating system
-        String osDetails;
-        try {
-            osDetails = OsUtils.getOsDetails();
-        } catch (OsUtils.UnsupportedOperatingSystem e) {
-            ;
-            throw new IOException(e);
-        }
+        String osDetails = OsUtils.getOsDetails();
         final String RELEASES = URLEncoder.encode("[RELEASE]", "UTF-8");
         String version = v;
         // An empty string indicates the latest version.

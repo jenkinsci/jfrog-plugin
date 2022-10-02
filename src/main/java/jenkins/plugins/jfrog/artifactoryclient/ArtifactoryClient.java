@@ -2,8 +2,6 @@ package jenkins.plugins.jfrog.artifactoryclient;
 
 import hudson.model.TaskListener;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -17,12 +15,9 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.message.BasicHeader;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import static jenkins.plugins.jfrog.artifactoryclient.Utils.isBlank;

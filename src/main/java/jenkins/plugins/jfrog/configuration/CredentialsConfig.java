@@ -1,7 +1,5 @@
 package jenkins.plugins.jfrog.configuration;
 
-import hudson.util.Secret;
-import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.Serializable;

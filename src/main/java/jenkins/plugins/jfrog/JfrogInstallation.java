@@ -1,5 +1,6 @@
 package jenkins.plugins.jfrog;
 
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.model.EnvironmentSpecific;
@@ -22,6 +23,8 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import net.sf.json.JSONObject;
 
+import javax.annotation.Nonnull;
+
 import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
 
 /**
@@ -29,6 +32,8 @@ import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
  */
 public class JfrogInstallation extends ToolInstallation
         implements NodeSpecific<JfrogInstallation>, EnvironmentSpecific<JfrogInstallation> {
+
+    public static final String JFROG_BINARY_PATH = "JFROG_BINARY_PATH";
 
     @DataBoundConstructor
     public JfrogInstallation(String name, String home, List<? extends ToolProperty<?>> properties) {
@@ -39,11 +44,9 @@ public class JfrogInstallation extends ToolInstallation
         return new JfrogInstallation(getName(), environment.expand(getHome()), getProperties().toList());
     }
 
-    public JfrogInstallation forNode(Node node, TaskListener log) throws IOException, InterruptedException {
+    public JfrogInstallation forNode(@NonNull Node node, TaskListener log) throws IOException, InterruptedException {
         return new JfrogInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
-
-    public static final String JFROG_BINARY_PATH = "JFROG_BINARY_PATH";
 
     @Override
     public void buildEnvVars(EnvVars env) {
@@ -51,8 +54,7 @@ public class JfrogInstallation extends ToolInstallation
         if (home == null) {
             return;
         }
-        String binaryPath = Paths.get(home, getJfrogCliBinaryName()).toString();
-        env.put(JFROG_BINARY_PATH, binaryPath);
+        env.put(JFROG_BINARY_PATH, home);
     }
 
     @Symbol("jfrog")
@@ -64,6 +66,7 @@ public class JfrogInstallation extends ToolInstallation
             load();
         }
 
+        @Nonnull
         @Override
         public String getDisplayName() {
             return "JFrog";
@@ -76,7 +79,7 @@ public class JfrogInstallation extends ToolInstallation
 
         @Override
         public List<? extends ToolInstaller> getDefaultInstallers() {
-            List installersList = new ArrayList<>();
+            List<ToolInstaller> installersList = new ArrayList<>();
             // The default installation will be from 'releases.jfrog.io'
             installersList.add(new ReleasesInstaller(null));
             return installersList;

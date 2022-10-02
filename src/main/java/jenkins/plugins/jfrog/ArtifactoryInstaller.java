@@ -8,17 +8,18 @@ import hudson.tools.ToolInstallation;
 import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 
-import static jenkins.plugins.jfrog.JfrogInstallation.JFROG_BINARY_PATH;
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**
- * Download and install Jfrog CLI from a remote artifactory (instead of the default 'releases.jfrog.io')
+ * Download and install JFrog CLI from a remote artifactory (instead of the default 'releases.jfrog.io')
  *
  * @author gail
  */
+@SuppressWarnings("unused")
 public class ArtifactoryInstaller extends BinaryInstaller {
 
     public final String serverId;
@@ -35,7 +36,7 @@ public class ArtifactoryInstaller extends BinaryInstaller {
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         JFrogPlatformInstance server = getSpecificServer(serverId);
         if (server == null) {
-            throw new IOException("Server id \'" + serverId + "\' doesn't exists.");
+            throw new IOException("Server id '" + serverId + "' doesn't exists.");
         }
         return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, "", server, repository);
     }
@@ -57,6 +58,7 @@ public class ArtifactoryInstaller extends BinaryInstaller {
 
     @Extension
     public static final class DescriptorImpl extends BinaryInstaller.DescriptorImpl<ArtifactoryInstaller> {
+        @Nonnull
         public String getDisplayName() {
             return "Install from Artifactory";
         }
@@ -67,7 +69,7 @@ public class ArtifactoryInstaller extends BinaryInstaller {
         }
 
         /**
-         * Necessary for displaying all configured server Ids.
+         * Necessary for displaying all configured server Ids. Used in the Jelly to show the server IDs.
          *
          * @return All pre configured servers Ids
          */
