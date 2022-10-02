@@ -5,13 +5,13 @@ import hudson.FilePath;
 import hudson.model.Job;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
-import io.jenkins.cli.shaded.org.apache.commons.lang.SystemUtils;
 import jenkins.MasterToSlaveFileCallable;
 import jenkins.plugins.jfrog.artifactoryclient.ArtifactoryClient;
 import jenkins.plugins.jfrog.configuration.Credentials;
 import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import jenkins.plugins.jfrog.plugins.PluginsUtils;
 import jenkins.security.MasterToSlaveCallable;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.io.File;
@@ -21,8 +21,6 @@ import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-
-import static jenkins.plugins.jfrog.OsUtils.isWindows;
 
 /**
  * @author gail
@@ -39,7 +37,7 @@ public class Utils {
     /**
      * decoded "[RELEASE]" for thee download url
      */
-    public static final String RELEASE = "latest";
+    public static final String RELEASE = "[RELEASE]";
 
     public static FilePath getWorkspace(Job<?, ?> project) {
         FilePath projectJob = new FilePath(project.getRootDir());
@@ -136,7 +134,7 @@ public class Utils {
     private static void downloadJfrogCli(File f, TaskListener log, String v, JFrogPlatformInstance instance, String REPOSITORY) throws IOException {
         // Getting relevant operating system
         String osDetails = OsUtils.getOsDetails();
-        final String RELEASES = URLEncoder.encode("[RELEASE]", "UTF-8");
+        final String RELEASES = URLEncoder.encode(RELEASE, "UTF-8");
         String version = v;
         // An empty string indicates the latest version.
         if (version.isEmpty()) {
