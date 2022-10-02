@@ -12,6 +12,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
+import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
+
 /**
  * Download and install Jfrog CLI from 'releases.jfrog.io'.
  *
@@ -31,7 +33,8 @@ public class ReleasesInstaller extends BinaryInstaller {
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         JFrogPlatformInstance server = new JFrogPlatformInstance(StringUtils.EMPTY, StringUtils.EMPTY, null, RELEASES_ARTIFACTORY_URL, StringUtils.EMPTY, StringUtils.EMPTY);
-        return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, id, server, REPOSITORY);
+        String binaryName = getJfrogCliBinaryName(!node.createLauncher(log).isUnix());
+        return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, id, server, REPOSITORY, binaryName);
     }
 
     @Extension

@@ -63,10 +63,11 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         workspace.mkdirs();
         // Build the 'jf' command
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
-        String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName()).toString();
+        boolean isWindows = !launcher.isUnix();
+        String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
         argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add(StringUtils.split(args));
-        if (!launcher.isUnix()) {
+        if (isWindows) {
             argsBuilder = argsBuilder.toWindowsCommand();
         }
 
@@ -74,7 +75,6 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
             // Set up a temporary Jfrog CLI home directory for a specific run.
             FilePath jfrogHomeTempDir = Utils.createAndGetJfrogCliHomeTempDir(workspace, String.valueOf(run.getNumber()));
             env.put(JFROG_CLI_HOME_DIR, jfrogHomeTempDir.getRemote());
-            Utils.addJfrogCliHomeDirToEnv(env, workspace, String.valueOf(run.getNumber()));
             Launcher.ProcStarter jfLauncher = launcher.launch().envs(env).pwd(workspace);
             // Configure all servers, skip if all server ids have already been configured.
             if (shouldConfig(jfrogHomeTempDir)) {

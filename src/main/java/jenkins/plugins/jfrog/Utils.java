@@ -1,6 +1,5 @@
 package jenkins.plugins.jfrog;
 
-import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.Job;
 import hudson.model.TaskListener;
@@ -11,7 +10,8 @@ import jenkins.plugins.jfrog.configuration.Credentials;
 import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import jenkins.plugins.jfrog.plugins.PluginsUtils;
 import jenkins.security.MasterToSlaveCallable;
-import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 
 import java.io.File;
@@ -44,17 +44,8 @@ public class Utils {
         return projectJob.getParent().sibling("workspace").child(project.getName());
     }
 
-    public static EnvVars addJfrogCliHomeDirToEnv(EnvVars env, final FilePath workspace, String buildNumber) throws IOException, InterruptedException {
-        if (env == null) {
-            env = new EnvVars();
-        }
-        String jfrogHomeTempDir = createAndGetJfrogCliHomeTempDir(workspace, buildNumber).getRemote();
-        env.put(JFROG_CLI_HOME_DIR, jfrogHomeTempDir);
-        return env;
-    }
-
-    public static String getJfrogCliBinaryName() {
-        if (SystemUtils.IS_OS_WINDOWS) {
+    public static String getJfrogCliBinaryName(boolean isWindows) {
+        if (isWindows) {
             return BINARY_NAME + ".exe";
         }
         return BINARY_NAME;
@@ -69,11 +60,11 @@ public class Utils {
      */
     public static void deleteBuildJfrogHomeDir(FilePath ws, String buildNumber, TaskListener taskListener) {
         try {
-            FilePath buildDataDir = createAndGetJfrogCliHomeTempDir(ws, buildNumber);
-            buildDataDir.deleteRecursive();
-            taskListener.getLogger().println(buildDataDir.getRemote() + " deleted");
+            FilePath jfrogCliHomeDir = createAndGetJfrogCliHomeTempDir(ws, buildNumber);
+            jfrogCliHomeDir.deleteRecursive();
+            taskListener.getLogger().println(jfrogCliHomeDir.getRemote() + " deleted");
         } catch (IOException | InterruptedException e) {
-            taskListener.getLogger().println("Failed while attempting to delete build data dir for build number " + buildNumber + "\n" + e.getMessage());
+            taskListener.getLogger().println("Failed while attempting to delete the JFrog CLI home dir \n" + ExceptionUtils.getRootCauseMessage(e));
         }
     }
 
@@ -103,11 +94,13 @@ public class Utils {
     /**
      * We should skip the download if the tool's directory already contains the specific version, otherwise we should download it.
      * An empty directory naming the specific version in the tool directory indicates if a specific tool is already downloaded.
+     * @param toolLocation -
+     * @param id           -
      */
-    private static boolean shouldDownloadToll(FilePath toolLocation, String id) throws IOException, InterruptedException {
+    private static boolean shouldDownloadTool(FilePath toolLocation, String id, String binaryName) throws IOException, InterruptedException {
         // An empty id indicates the latest version - we would like to override and reinstall the latest tool in this case.
-        if (!id.isEmpty()) {
-            if (toolLocation.child(id).child(getJfrogCliBinaryName()).exists()) {
+        if (StringUtils.isNotBlank(id)) {
+            if (toolLocation.child(id).child(binaryName).exists()) {
                 return false;
             }
         }
@@ -131,7 +124,7 @@ public class Utils {
      * @param REPOSITORY identifies the repository in Artifactory where the CLIs binary is stored.
      * @throws IOException
      */
-    private static void downloadJfrogCli(File f, TaskListener log, String v, JFrogPlatformInstance instance, String REPOSITORY) throws IOException {
+    private static void downloadJfrogCli(File f, TaskListener log, String v, JFrogPlatformInstance instance, String REPOSITORY, String binaryName) throws IOException {
         // Getting relevant operating system
         String osDetails = OsUtils.getOsDetails();
         final String RELEASES = URLEncoder.encode(RELEASE, "UTF-8");
@@ -140,7 +133,6 @@ public class Utils {
         if (version.isEmpty()) {
             version = RELEASES;
         }
-        String binaryName = getJfrogCliBinaryName();
         String suffix = "/" + REPOSITORY + "/v2-jf/" + version + "/jfrog-cli-" + osDetails + "/" + binaryName;
         if (version.equals(RELEASES)) {
             log.getLogger().printf("Download \'%s\' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
@@ -170,13 +162,13 @@ public class Utils {
         }
     }
 
-    public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String REPOSITORY) throws IOException, InterruptedException {
+    public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String REPOSITORY, String binaryName) throws IOException, InterruptedException {
         // Download Jfrog CLI binary
-        if (shouldDownloadToll(toolLocation, version)) {
+        if (shouldDownloadTool(toolLocation, version, binaryName)) {
             toolLocation.act(new MasterToSlaveFileCallable<Void>() {
                 @Override
                 public Void invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
-                    downloadJfrogCli(f, log, version, instance, REPOSITORY);
+                    downloadJfrogCli(f, log, version, instance, REPOSITORY, binaryName);
                     return null;
                 }
             });

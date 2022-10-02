@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 
+import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
 import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**
@@ -38,7 +39,8 @@ public class ArtifactoryInstaller extends BinaryInstaller {
         if (server == null) {
             throw new IOException("Server id '" + serverId + "' doesn't exists.");
         }
-        return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, "", server, repository);
+        String binaryName = getJfrogCliBinaryName(!node.createLauncher(log).isUnix());
+        return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, "", server, repository, binaryName);
     }
 
     /**
