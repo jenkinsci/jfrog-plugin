@@ -14,6 +14,7 @@ import jenkins.plugins.jfrog.configuration.Credentials;
 import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import jenkins.plugins.jfrog.plugins.PluginsUtils;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jenkinsci.Symbol;
@@ -65,6 +66,9 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
         boolean isWindows = !launcher.isUnix();
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
+        if (isWindows){
+            jfrogBinaryPath = FilenameUtils.separatorsToUnix(jfrogBinaryPath);
+        }
         argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add(StringUtils.split(args));
         if (isWindows) {

@@ -94,8 +94,9 @@ public class Utils {
     /**
      * We should skip the download if the tool's directory already contains the specific version, otherwise we should download it.
      * An empty directory naming the specific version in the tool directory indicates if a specific tool is already downloaded.
-     * @param toolLocation -
-     * @param id           -
+     * @param toolLocation - expected location of the tool on the fileSystem.
+     * @param id           - expected version. In case of the latest version 'id' will be empty.
+     * @param binaryName   - expected binary name relevant to the operating system.
      */
     private static boolean shouldDownloadTool(FilePath toolLocation, String id, String binaryName) throws IOException, InterruptedException {
         // An empty id indicates the latest version - we would like to override and reinstall the latest tool in this case.
@@ -117,23 +118,20 @@ public class Utils {
     /**
      * Download and locate the JFrog CLI binary in the specific build home directory.
      *
-     * @param f
-     * @param log
+     * @param toolLocation location of the tool directory on the fileSystem.
+     * @param log        job task listener.
      * @param v          version. empty string indicates the latest version.
      * @param instance   JFrogPlatformInstance contains url and credentials needed for the downloading operation.
-     * @param REPOSITORY identifies the repository in Artifactory where the CLIs binary is stored.
+     * @param repository identifies the repository in Artifactory where the CLIs binary is stored.
      * @throws IOException
      */
-    private static void downloadJfrogCli(File f, TaskListener log, String v, JFrogPlatformInstance instance, String REPOSITORY, String binaryName) throws IOException {
+    private static void downloadJfrogCli(File toolLocation, TaskListener log, String v, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {
         // Getting relevant operating system
         String osDetails = OsUtils.getOsDetails();
         final String RELEASES = URLEncoder.encode(RELEASE, "UTF-8");
-        String version = v;
         // An empty string indicates the latest version.
-        if (version.isEmpty()) {
-            version = RELEASES;
-        }
-        String suffix = "/" + REPOSITORY + "/v2-jf/" + version + "/jfrog-cli-" + osDetails + "/" + binaryName;
+        String version = StringUtils.defaultIfBlank(v, RELEASES);
+        String suffix = "/" + repository + "/v2-jf/" + version + "/jfrog-cli-" + osDetails + "/" + binaryName;
         if (version.equals(RELEASES)) {
             log.getLogger().printf("Download \'%s\' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
         } else {
@@ -154,7 +152,7 @@ public class Utils {
             if (response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                 throw new IOException("Failed downloading JFrog CLI binary: " + response.getStatusLine());
             }
-            File file = new File(f, binaryName);
+            File file = new File(toolLocation, binaryName);
             Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             if (!file.setExecutable(true)) {
                 throw new IOException("No permission to add execution permission to binary");
