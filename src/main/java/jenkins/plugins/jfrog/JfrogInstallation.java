@@ -12,6 +12,7 @@ import hudson.tools.ToolInstaller;
 import hudson.tools.ToolProperty;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import net.sf.json.JSONObject;
+
+import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
 
 /**
  * @author gail
@@ -48,7 +51,8 @@ public class JfrogInstallation extends ToolInstallation
         if (home == null) {
             return;
         }
-        env.put(JFROG_BINARY_PATH, home);
+        String binaryPath = Paths.get(home, getJfrogCliBinaryName()).toString();
+        env.put(JFROG_BINARY_PATH, binaryPath);
     }
 
     @Symbol("jfrog")
