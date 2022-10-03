@@ -21,8 +21,8 @@ import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
  */
 public class ReleasesInstaller extends BinaryInstaller {
     public final String id;
-    public final String RELEASES_ARTIFACTORY_URL = "https://releases.jfrog.io/artifactory";
-    public final String REPOSITORY = "jfrog-cli";
+    public static final String RELEASES_ARTIFACTORY_URL = "https://releases.jfrog.io/artifactory";
+    public static final String REPOSITORY = "jfrog-cli";
 
     @DataBoundConstructor
     public ReleasesInstaller(String id) {

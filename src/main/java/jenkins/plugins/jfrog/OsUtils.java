@@ -7,7 +7,7 @@ import java.io.IOException;
  */
 public class OsUtils {
     private static final String OS_NAME = System.getProperty("os.name").toLowerCase();
-    private static final String OS_ARCH = System.getProperty("os.name").toLowerCase();
+    private static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
 
     public static boolean isWindows() {
         return OS_NAME.contains("win");

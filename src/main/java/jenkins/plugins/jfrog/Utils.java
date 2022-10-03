@@ -135,9 +135,9 @@ public class Utils {
         String version = StringUtils.defaultIfBlank(v, RELEASE);
         String suffix = String.format("/%s/v2-jf/%s/jfrog-cli-%s/%s", repository, version, osDetails, binaryName);
         if (version.equals(RELEASE)) {
-            log.getLogger().printf("Download '%s' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
+            log.getLogger().printf("Download '%s' latest version from: %s%n", binaryName, instance.getArtifactoryUrl() + suffix);
         } else {
-            log.getLogger().printf("Download '%s' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl() + suffix);
+            log.getLogger().printf("Download '%s' version %s from: %s%n", binaryName, version, instance.getArtifactoryUrl() + suffix);
         }
         // Getting credentials
         String username = "", password = "", accessToken = "";

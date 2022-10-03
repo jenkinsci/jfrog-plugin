@@ -121,7 +121,6 @@ class PreemptiveRedirectStrategy extends DefaultRedirectStrategy {
 
     @Override
     protected boolean isRedirectable(String method) {
-        String message = "The method " + method;
         if (redirectableMethods.contains(method.toLowerCase())) {
             return true;
         }

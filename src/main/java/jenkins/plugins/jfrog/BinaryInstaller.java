@@ -47,7 +47,6 @@ public abstract class BinaryInstaller extends ToolInstaller {
          * @return a downloadable object
          */
         public DownloadService.Downloadable createDownloadable() {
-            final BinaryInstaller.DescriptorImpl delegate = this;
             return new DownloadService.Downloadable(getId()) {
                 @Override
                 public JSONObject reduce(List<JSONObject> jsonList) {

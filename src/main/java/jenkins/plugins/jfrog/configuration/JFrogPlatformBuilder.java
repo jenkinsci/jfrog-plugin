@@ -209,6 +209,9 @@ public class JFrogPlatformBuilder extends GlobalConfiguration {
     public static List<JFrogPlatformInstance> getJFrogPlatformInstances() {
         JFrogPlatformBuilder.DescriptorImpl descriptor = (JFrogPlatformBuilder.DescriptorImpl)
                 Hudson.get().getDescriptor(JFrogPlatformBuilder.class);
+        if (descriptor == null) {
+            return new ArrayList<>();
+        }
         return descriptor.getJfrogInstances();
     }
 }
