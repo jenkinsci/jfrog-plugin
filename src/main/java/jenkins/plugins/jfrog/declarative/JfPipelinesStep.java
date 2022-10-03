@@ -67,7 +67,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         boolean isWindows = !launcher.isUnix();
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
         if (isWindows){
-            jfrogBinaryPath = FilenameUtils.separatorsToUnix(jfrogBinaryPath);
+            jfrogBinaryPath = FilenameUtils.separatorsToWindows(jfrogBinaryPath);
         }
         argsBuilder.add(jfrogBinaryPath);
         argsBuilder.add(StringUtils.split(args));
