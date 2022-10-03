@@ -70,6 +70,8 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
         if (isWindows) {
             jfrogBinaryPath = FilenameUtils.separatorsToWindows(jfrogBinaryPath);
+        } else {
+            jfrogBinaryPath = FilenameUtils.separatorsToUnix(jfrogBinaryPath);
         }
         builder.add(jfrogBinaryPath);
         builder.add(StringUtils.split(args));
