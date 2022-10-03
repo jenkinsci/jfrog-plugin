@@ -82,7 +82,11 @@ public class Utils {
         return ws.act(new MasterToSlaveCallable<FilePath, IOException>() {
             @Override
             public FilePath call() {
-                final FilePath tempDir = ws.sibling(ws.getName() + Objects.toString(workspaceList, "@") + "tmp").child("jfrog");
+                FilePath tempDir = ws.sibling(ws.getName() + Objects.toString(workspaceList, "@") + "tmp");
+                        if (tempDir == null){
+                            throw new RuntimeException("Failed to create JFrog CLI temporary directory");
+                        }
+                        tempDir =  tempDir.child("jfrog");
                 File tempDirFile = new File(tempDir.getRemote());
                 if (tempDirFile.mkdirs()) {
                     tempDirFile.deleteOnExit();
