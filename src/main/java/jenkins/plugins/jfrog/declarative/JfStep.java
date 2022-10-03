@@ -36,13 +36,13 @@ import static jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder.getJFrogP
  * @author gail
  */
 @SuppressWarnings("unused")
-public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
+public class JfStep<T> extends Builder implements SimpleBuildStep {
     static final String STEP_NAME = "jf";
     static final String JFROG_CLI_HOME_DIR = "JFROG_CLI_HOME_DIR";
     protected String args;
 
     @DataBoundConstructor
-    public JfPipelinesStep(String args) {
+    public JfStep(String args) {
         this.args = args;
     }
 
@@ -53,41 +53,41 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     /**
      * Build and run a 'jf' command.
      *
-     * @param run       a build this is running as a part of
+     * @param run       running as a part of a specific build
      * @param workspace a workspace to use for any file operations
      * @param env       environment variables applicable to this step
      * @param launcher  a way to start processes
      * @param listener  a place to send output
-     * @throws InterruptedException
-     * @throws IOException
+     * @throws InterruptedException if the step is interrupted
+     * @throws IOException in case of any I/O error, or we failed to run the 'jf' command
      */
     @Override
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
         workspace.mkdirs();
         // Build the 'jf' command
-        ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
+        ArgumentListBuilder builder = new ArgumentListBuilder();
         boolean isWindows = !launcher.isUnix();
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
         if (isWindows) {
             jfrogBinaryPath = FilenameUtils.separatorsToWindows(jfrogBinaryPath);
         }
-        argsBuilder.add(jfrogBinaryPath);
-        argsBuilder.add(StringUtils.split(args));
+        builder.add(jfrogBinaryPath);
+        builder.add(StringUtils.split(args));
         if (isWindows) {
-            argsBuilder = argsBuilder.toWindowsCommand();
+            builder = builder.toWindowsCommand();
         }
 
         try {
             // Set up a temporary Jfrog CLI home directory for a specific run.
             FilePath jfrogHomeTempDir = Utils.createAndGetJfrogCliHomeTempDir(workspace, String.valueOf(run.getNumber()));
             env.put(JFROG_CLI_HOME_DIR, jfrogHomeTempDir.getRemote());
-            Launcher.ProcStarter jfLauncher = launcher.launch().envs(env).pwd(workspace);
+            Launcher.ProcStarter jfLauncher = launcher.launch().envs(env).pwd(workspace).stdout(listener);
             // Configure all servers, skip if all server ids have already been configured.
             if (shouldConfig(jfrogHomeTempDir)) {
-                configAllServers(jfLauncher, listener, jfrogBinaryPath, !launcher.isUnix());
+                configAllServers(jfLauncher, jfrogBinaryPath, !launcher.isUnix());
             }
             // Running the 'jf' command
-            int exitValue = jfLauncher.cmds(argsBuilder).stdout(listener).join();
+            int exitValue = jfLauncher.cmds(builder).join();
             if (exitValue != 0) {
                 throw new RuntimeException("Running 'jf' command failed with exit code " + exitValue);
             }
@@ -101,7 +101,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
      * Before we run a 'jf' command for the first time, we want to configure all servers first.
      * We know that all servers have already been configured if there is a "jfrog-cli.conf" file in the ".jfrog" home directory.
      *
-     * @jfrogHomeTempDir the temp ".jfrog" directory path.
+     * @param jfrogHomeTempDir - The temp ".jfrog" directory path.
      */
     private boolean shouldConfig(FilePath jfrogHomeTempDir) throws IOException, InterruptedException {
         List<FilePath> filesList = jfrogHomeTempDir.list();
@@ -116,47 +116,47 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
     /**
      * Locally configure all servers that was configured in the Jenkins UI.
      */
-    private void configAllServers(Launcher.ProcStarter launcher, TaskListener listener, String jfrogBinaryPath, boolean isWindows) throws IOException, InterruptedException {
+    private void configAllServers(Launcher.ProcStarter launcher, String jfrogBinaryPath, boolean isWindows) throws IOException, InterruptedException {
         // Config all servers using the 'jf c add' command.
         List<JFrogPlatformInstance> jfrogInstances = getJFrogPlatformInstances();
         if (jfrogInstances != null && jfrogInstances.size() > 0) {
             for (JFrogPlatformInstance jfrogPlatformInstance : jfrogInstances) {
                 // Build 'jf' command
-                ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
-                addConfigArguments(argsBuilder, jfrogPlatformInstance, jfrogBinaryPath);
+                ArgumentListBuilder builder = new ArgumentListBuilder();
+                addConfigArguments(builder, jfrogPlatformInstance, jfrogBinaryPath);
                 if (isWindows) {
-                    argsBuilder = argsBuilder.toWindowsCommand();
+                    builder = builder.toWindowsCommand();
                 }
                 // Running 'jf' command
-                launcher.cmds(argsBuilder).stdout(listener).join();
+                int exitValue = launcher.cmds(builder).join();
+                if (exitValue != 0) {
+                    throw new RuntimeException("Running 'jf' command failed with exit code " + exitValue);
+                }
             }
         }
     }
 
-    private void addConfigArguments(ArgumentListBuilder argsBuilder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath) {
+    private void addConfigArguments(ArgumentListBuilder builder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath) {
         String credentialsId = jfrogPlatformInstance.getId();
-        argsBuilder.add(jfrogBinaryPath);
-        argsBuilder.add("c");
-        argsBuilder.add("add");
-        argsBuilder.add(credentialsId);
+        builder.add(jfrogBinaryPath).add("c").add("add").add(credentialsId);
         // Add credentials
         StringCredentials accessTokenCredentials = PluginsUtils.accessTokenCredentialsLookup(credentialsId);
         if (accessTokenCredentials != null) {
-            argsBuilder.addMasked("access-token=" + accessTokenCredentials.getSecret().getPlainText());
+            builder.addMasked("access-token=" + accessTokenCredentials.getSecret().getPlainText());
         } else {
             Credentials credentials = PluginsUtils.credentialsLookup(credentialsId, null);
-            argsBuilder.add("--user=" + credentials.getUsername());
-            argsBuilder.addMasked("--password=" + credentials.getPassword());
+            builder.add("--user=" + credentials.getUsername());
+            builder.addMasked("--password=" + credentials.getPassword());
         }
         // Add URLs
-        argsBuilder.add("--url=" + jfrogPlatformInstance.getUrl());
-        argsBuilder.add("--artifactory-url=" + jfrogPlatformInstance.getArtifactoryUrl());
-        argsBuilder.add("--distribution-url=" + jfrogPlatformInstance.getDistributionUrl());
-        argsBuilder.add("--xray-url=" + jfrogPlatformInstance.getXrayUrl());
+        builder.add("--url=" + jfrogPlatformInstance.getUrl());
+        builder.add("--artifactory-url=" + jfrogPlatformInstance.getArtifactoryUrl());
+        builder.add("--distribution-url=" + jfrogPlatformInstance.getDistributionUrl());
+        builder.add("--xray-url=" + jfrogPlatformInstance.getXrayUrl());
 
-        argsBuilder.add("--interactive=false");
+        builder.add("--interactive=false");
         // The installation process takes place more than once per build, so we will configure the same server ID several times.
-        argsBuilder.add("--overwrite=true");
+        builder.add("--overwrite=true");
 
     }
 

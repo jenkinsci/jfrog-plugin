@@ -29,7 +29,7 @@ public class PluginsUtils {
      * lookup for credentials configured using jenkins credentials plugin.
      *
      * @param credentialsId uniq id given to the configured credentials.
-     * @param item
+     * @param item some item (job or folder).
      * @return credentials. an empty field can't be null, will be represented by empty string.
      */
     public static Credentials credentialsLookup(String credentialsId, Item item) {

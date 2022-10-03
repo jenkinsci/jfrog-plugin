@@ -6,7 +6,6 @@ var resolverPrefix = 'credentialsConfig';
 
 function updateViewForCredentialsMethod(useCredentialsPlugin) {
     toggleCredentialsPluginFromView(useCredentialsPlugin);
-    // toggleLegacyUsernamePasswordFromView(useCredentialsPlugin);
 }
 
 function toggleCredentialsPluginFromView(show) {
