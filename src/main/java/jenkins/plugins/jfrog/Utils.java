@@ -128,11 +128,11 @@ public class Utils {
     private static void downloadJfrogCli(File toolLocation, TaskListener log, String v, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {
         // Getting relevant operating system
         String osDetails = OsUtils.getOsDetails();
-        final String RELEASES = URLEncoder.encode(RELEASE, "UTF-8");
+        final String RELEASE = URLEncoder.encode(Utils.RELEASE, "UTF-8");
         // An empty string indicates the latest version.
-        String version = StringUtils.defaultIfBlank(v, RELEASES);
+        String version = StringUtils.defaultIfBlank(v, RELEASE);
         String suffix = String.format("/%s/v2-jf/%s/jfrog-cli-%s/%s", repository, version, osDetails, binaryName);
-        if (version.equals(RELEASES)) {
+        if (version.equals(RELEASE)) {
             log.getLogger().printf("Download '%s' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
         } else {
             log.getLogger().printf("Download '%s' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl() + suffix);

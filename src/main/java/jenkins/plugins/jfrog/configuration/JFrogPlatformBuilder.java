@@ -20,12 +20,13 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 import java.util.*;
 
 /**
+ * Builder for JFrogPlatformInstance, used by the JFrog CLI config command.
  * @author gail
  */
-public class JfrogPlatformBuilder extends GlobalConfiguration {
+public class JFrogPlatformBuilder extends GlobalConfiguration {
 
     /**
-     * Descriptor for {@link JfrogPlatformBuilder}. Used as a singleton.
+     * Descriptor for {@link JFrogPlatformBuilder}. Used as a singleton.
      */
     @Extension
     // this marker indicates Hudson that this is an implementation of an extension point.
@@ -33,7 +34,7 @@ public class JfrogPlatformBuilder extends GlobalConfiguration {
         private List<JFrogPlatformInstance> jfrogInstances;
 
         public DescriptorImpl() {
-            super(JfrogPlatformBuilder.class);
+            super(JFrogPlatformBuilder.class);
             load();
         }
 
@@ -201,8 +202,8 @@ public class JfrogPlatformBuilder extends GlobalConfiguration {
      * @return can be empty but never null.
      */
     public static List<JFrogPlatformInstance> getJFrogPlatformInstances() {
-        JfrogPlatformBuilder.DescriptorImpl descriptor = (JfrogPlatformBuilder.DescriptorImpl)
-                Hudson.get().getDescriptor(JfrogPlatformBuilder.class);
+        JFrogPlatformBuilder.DescriptorImpl descriptor = (JFrogPlatformBuilder.DescriptorImpl)
+                Hudson.get().getDescriptor(JFrogPlatformBuilder.class);
         return descriptor.getJfrogInstances();
     }
 }

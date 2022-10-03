@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
-import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
+import static jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**
  * Download and install JFrog CLI from a remote artifactory (instead of the default 'releases.jfrog.io')

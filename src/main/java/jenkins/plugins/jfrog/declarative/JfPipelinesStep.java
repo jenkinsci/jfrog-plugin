@@ -28,7 +28,7 @@ import java.util.List;
 
 import static jenkins.plugins.jfrog.JfrogInstallation.JFROG_BINARY_PATH;
 import static jenkins.plugins.jfrog.Utils.getJfrogCliBinaryName;
-import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
+import static jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**
  * @author gail

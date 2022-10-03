@@ -6,7 +6,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.Serializable;
 import java.util.List;
 
-import static jenkins.plugins.jfrog.configuration.JfrogPlatformBuilder.getJFrogPlatformInstances;
+import static jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder.getJFrogPlatformInstances;
 
 /**
  * Represents an instance of jenkins JFrog instance configuration page.
