@@ -19,10 +19,6 @@ public class JFrogPlatformInstance implements Serializable {
     private String id;
     private CredentialsConfig credentialsConfig;
 
-    public CredentialsConfig getCredentialsConfig() {
-        return credentialsConfig;
-    }
-
     @DataBoundConstructor
     public JFrogPlatformInstance(String serverId, String platformUrl, CredentialsConfig credentialsConfig, String artifactoryUrl, String distributionUrl, String xrayUrl) {
         this.id = serverId;
@@ -31,6 +27,10 @@ public class JFrogPlatformInstance implements Serializable {
         this.artifactoryUrl = addUrlSuffix(artifactoryUrl, this.url, "artifactory");
         this.distributionUrl = addUrlSuffix(distributionUrl, this.url, "distribution");
         this.xrayUrl = addUrlSuffix(xrayUrl, this.url, "xray");
+    }
+
+    public CredentialsConfig getCredentialsConfig() {
+        return credentialsConfig;
     }
 
     /**

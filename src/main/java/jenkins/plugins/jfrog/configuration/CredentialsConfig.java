@@ -8,8 +8,8 @@ import java.io.Serializable;
  * Configuration for all available credentials providers.
  */
 public class CredentialsConfig implements Serializable {
-    private Credentials credentials;
-    private String credentialsId;
+    private final Credentials credentials;
+    private final String credentialsId;
 
     /**
      * This object obtains the username, password and credentials id (used with the Credentials plugin)

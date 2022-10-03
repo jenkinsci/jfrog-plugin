@@ -1,4 +1,6 @@
 <?jelly escape-by-default='true'?>
 <div>
-    This plugin add support for JFROG, the most advanced build tool ever.
+    The Jenkins JFrog Plugin allows for easy integration between Jenkins and the JFrog Platform.
+    This integration allows your build jobs to deploy artifacts and resolve dependencies to and from Artifactory, and then have them linked to the build job that created them. It also allows you to scan your artifacts and builds with JFrog Xray and distribute your software package to remote locations using JFrog Distribution.
+    This is all achieved by the plugin by wrapping JFrog CLI. Any JFrog CLI command can be executed from within your Jenkins Pipeline job using the JFrog Plugin.
 </div>

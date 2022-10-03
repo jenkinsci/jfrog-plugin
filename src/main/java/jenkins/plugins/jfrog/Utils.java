@@ -131,11 +131,11 @@ public class Utils {
         final String RELEASES = URLEncoder.encode(RELEASE, "UTF-8");
         // An empty string indicates the latest version.
         String version = StringUtils.defaultIfBlank(v, RELEASES);
-        String suffix = "/" + repository + "/v2-jf/" + version + "/jfrog-cli-" + osDetails + "/" + binaryName;
+        String suffix = String.format("/%s/v2-jf/%s/jfrog-cli-%s/%s", repository, version, osDetails, binaryName);
         if (version.equals(RELEASES)) {
-            log.getLogger().printf("Download \'%s\' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
+            log.getLogger().printf("Download '%s' latest version from: %s\n", binaryName, instance.getArtifactoryUrl() + suffix);
         } else {
-            log.getLogger().printf("Download \'%s\' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl() + suffix);
+            log.getLogger().printf("Download '%s' version %s from: %s\n", binaryName, version, instance.getArtifactoryUrl() + suffix);
         }
         // Getting credentials
         String username = "", password = "", accessToken = "";
@@ -165,7 +165,7 @@ public class Utils {
         if (shouldDownloadTool(toolLocation, version, binaryName)) {
             toolLocation.act(new MasterToSlaveFileCallable<Void>() {
                 @Override
-                public Void invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
+                public Void invoke(File f, VirtualChannel channel) throws IOException {
                     downloadJfrogCli(f, log, version, instance, REPOSITORY, binaryName);
                     return null;
                 }
