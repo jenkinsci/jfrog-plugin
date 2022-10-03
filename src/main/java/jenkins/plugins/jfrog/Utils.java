@@ -17,7 +17,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -94,6 +95,7 @@ public class Utils {
     /**
      * We should skip the download if the tool's directory already contains the specific version, otherwise we should download it.
      * An empty directory naming the specific version in the tool directory indicates if a specific tool is already downloaded.
+     *
      * @param toolLocation - expected location of the tool on the fileSystem.
      * @param id           - expected version. In case of the latest version 'id' will be empty.
      * @param binaryName   - expected binary name relevant to the operating system.
@@ -119,10 +121,10 @@ public class Utils {
      * Download and locate the JFrog CLI binary in the specific build home directory.
      *
      * @param toolLocation location of the tool directory on the fileSystem.
-     * @param log        job task listener.
-     * @param v          version. empty string indicates the latest version.
-     * @param instance   JFrogPlatformInstance contains url and credentials needed for the downloading operation.
-     * @param repository identifies the repository in Artifactory where the CLIs binary is stored.
+     * @param log          job task listener.
+     * @param v            version. empty string indicates the latest version.
+     * @param instance     JFrogPlatformInstance contains url and credentials needed for the downloading operation.
+     * @param repository   identifies the repository in Artifactory where the CLIs binary is stored.
      * @throws IOException
      */
     private static void downloadJfrogCli(File toolLocation, TaskListener log, String v, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {

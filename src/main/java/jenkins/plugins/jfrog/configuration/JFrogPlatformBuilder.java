@@ -2,13 +2,14 @@ package jenkins.plugins.jfrog.configuration;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import hudson.Extension;
-import hudson.model.*;
+import hudson.model.Descriptor;
+import hudson.model.Hudson;
+import hudson.model.Item;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.GlobalConfiguration;
 import jenkins.model.Jenkins;
 import jenkins.plugins.jfrog.plugins.PluginsUtils;
-
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -17,10 +18,14 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Builder for JFrogPlatformInstance, used by the JFrog CLI config command.
+ *
  * @author gail
  */
 public class JFrogPlatformBuilder extends GlobalConfiguration {

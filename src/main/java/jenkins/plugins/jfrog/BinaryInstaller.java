@@ -1,16 +1,15 @@
 package jenkins.plugins.jfrog;
 
 import hudson.FilePath;
-import hudson.model.*;
-import hudson.slaves.NodeSpecific;
+import hudson.model.DownloadService;
+import hudson.model.Node;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstaller;
 import hudson.tools.ToolInstallerDescriptor;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 /**
  * Installer for JFrog CLI binary.

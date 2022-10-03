@@ -1,12 +1,13 @@
 package jenkins.plugins.jfrog.jenkins;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
-import java.lang.reflect.Method;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.runner.Description;
 import org.jvnet.hudson.test.JenkinsRecipe;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import java.lang.reflect.Method;
 
 /**
  * Provides JUnit 5 compatibility for {@link JenkinsRule}.
@@ -27,8 +28,7 @@ class JUnit5JenkinsRule extends JenkinsRule {
         if (jenkinsRecipe == null) {
             return;
         }
-        @SuppressWarnings("unchecked")
-        final JenkinsRecipe.Runner<JenkinsRecipe> runner =
+        @SuppressWarnings("unchecked") final JenkinsRecipe.Runner<JenkinsRecipe> runner =
                 (JenkinsRecipe.Runner<JenkinsRecipe>) jenkinsRecipe.value().getDeclaredConstructor().newInstance();
         recipes.add(runner);
         tearDowns.add(() -> runner.tearDown(this, jenkinsRecipe));

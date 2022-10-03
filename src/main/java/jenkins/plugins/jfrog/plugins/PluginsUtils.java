@@ -8,12 +8,11 @@ import hudson.model.Item;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
-import org.apache.commons.lang3.StringUtils;
-import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 import jenkins.plugins.jfrog.configuration.Credentials;
+import org.jenkinsci.plugins.plaincredentials.StringCredentials;
 
-import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials;
 
@@ -28,6 +27,7 @@ public class PluginsUtils {
 
     /**
      * lookup for credentials configured using jenkins credentials plugin.
+     *
      * @param credentialsId uniq id given to the configured credentials.
      * @param item
      * @return credentials. an empty field can't be null, will be represented by empty string.
@@ -51,30 +51,31 @@ public class PluginsUtils {
         }
 
     }
-        /**
-         * Populate credentials list from the Jenkins Credentials plugin. In use in UI jobs and in the Global configuration.
-         *
-         * @param project - Jenkins project
-         * @return credentials list
-         */
-        public static ListBoxModel fillPluginCredentials (Item project){
-            List<DomainRequirement> domainRequirements = Collections.emptyList();
-            return new StandardListBoxModel()
-                    .includeEmptyValue()
-                    // Add project scoped credentials:
-                    .includeMatchingAs(ACL.SYSTEM, project, StandardCredentials.class, domainRequirements,
-                            CredentialsMatchers.anyOf(
-                                    CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
-                                    CredentialsMatchers.instanceOf(StringCredentials.class),
-                                    CredentialsMatchers.instanceOf(StandardCertificateCredentials.class)
-                            ))
-                    // Add Jenkins system scoped credentials
-                    .includeMatchingAs(ACL.SYSTEM, Jenkins.get(), StandardCredentials.class, domainRequirements,
-                            CredentialsMatchers.anyOf(
-                                    CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
-                                    CredentialsMatchers.instanceOf(StringCredentials.class),
-                                    CredentialsMatchers.instanceOf(StandardCertificateCredentials.class)
-                            )
-                    );
-        }
+
+    /**
+     * Populate credentials list from the Jenkins Credentials plugin. In use in UI jobs and in the Global configuration.
+     *
+     * @param project - Jenkins project
+     * @return credentials list
+     */
+    public static ListBoxModel fillPluginCredentials(Item project) {
+        List<DomainRequirement> domainRequirements = Collections.emptyList();
+        return new StandardListBoxModel()
+                .includeEmptyValue()
+                // Add project scoped credentials:
+                .includeMatchingAs(ACL.SYSTEM, project, StandardCredentials.class, domainRequirements,
+                        CredentialsMatchers.anyOf(
+                                CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
+                                CredentialsMatchers.instanceOf(StringCredentials.class),
+                                CredentialsMatchers.instanceOf(StandardCertificateCredentials.class)
+                        ))
+                // Add Jenkins system scoped credentials
+                .includeMatchingAs(ACL.SYSTEM, Jenkins.get(), StandardCredentials.class, domainRequirements,
+                        CredentialsMatchers.anyOf(
+                                CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
+                                CredentialsMatchers.instanceOf(StringCredentials.class),
+                                CredentialsMatchers.instanceOf(StandardCertificateCredentials.class)
+                        )
+                );
     }
+}

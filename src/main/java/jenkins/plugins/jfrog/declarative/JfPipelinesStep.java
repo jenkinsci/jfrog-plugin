@@ -5,7 +5,9 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractProject;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
@@ -66,7 +68,7 @@ public class JfPipelinesStep<T> extends Builder implements SimpleBuildStep {
         ArgumentListBuilder argsBuilder = new ArgumentListBuilder();
         boolean isWindows = !launcher.isUnix();
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
-        if (isWindows){
+        if (isWindows) {
             jfrogBinaryPath = FilenameUtils.separatorsToWindows(jfrogBinaryPath);
         }
         argsBuilder.add(jfrogBinaryPath);

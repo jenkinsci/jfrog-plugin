@@ -4,7 +4,6 @@ import hudson.model.Label;
 import hudson.model.Slave;
 import jenkins.plugins.jfrog.jenkins.EnableJenkins;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import static org.junit.Assert.fail;
@@ -16,7 +15,7 @@ public class PipelineTestBase {
     public Slave slave;
     public static final String SLAVE_LABEL = "TestSlave";
 
-    public void initPipelineTest(JenkinsRule jenkins){
+    public void initPipelineTest(JenkinsRule jenkins) {
         this.jenkins = jenkins;
         createSlave(jenkins);
     }
