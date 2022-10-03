@@ -67,6 +67,8 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
         // Build the 'jf' command
         ArgumentListBuilder builder = new ArgumentListBuilder();
         boolean isWindows = !launcher.isUnix();
+        // JFROG_BINARY_PATH is set according to the main OS.
+        // We should convert JFROG_BINARY_PATH to run on the relevant slave OS if main and slave run on different operating systems.
         String jfrogBinaryPath = Paths.get(env.get(JFROG_BINARY_PATH), getJfrogCliBinaryName(isWindows)).toString();
         if (isWindows) {
             jfrogBinaryPath = FilenameUtils.separatorsToWindows(jfrogBinaryPath);

@@ -63,7 +63,7 @@ public class JfrogInstallation extends ToolInstallation
         @Nonnull
         @Override
         public String getDisplayName() {
-            return "JFrog";
+            return "JFrog CLI";
         }
 
         @Override
