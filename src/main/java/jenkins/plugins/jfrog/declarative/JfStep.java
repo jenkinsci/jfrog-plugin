@@ -59,7 +59,7 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
      * @param launcher  a way to start processes
      * @param listener  a place to send output
      * @throws InterruptedException if the step is interrupted
-     * @throws IOException in case of any I/O error, or we failed to run the 'jf' command
+     * @throws IOException          in case of any I/O error, or we failed to run the 'jf' command
      */
     @Override
     public void perform(@NonNull Run<?, ?> run, @NonNull FilePath workspace, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener listener) throws InterruptedException, IOException {
@@ -83,8 +83,10 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
             env.put(JFROG_CLI_HOME_DIR, jfrogHomeTempDir.getRemote());
             Launcher.ProcStarter jfLauncher = launcher.launch().envs(env).pwd(workspace).stdout(listener);
             // Configure all servers, skip if all server ids have already been configured.
+            listener.getLogger().println("win : shouldConfig("+jfrogBinaryPath+")");
             if (shouldConfig(jfrogHomeTempDir)) {
-                configAllServers(jfLauncher, jfrogBinaryPath, !launcher.isUnix());
+                // TODO remove listener
+                configAllServers(jfLauncher, listener, jfrogBinaryPath, !launcher.isUnix());
             }
             // Running the 'jf' command
             int exitValue = jfLauncher.cmds(builder).join();
@@ -116,16 +118,19 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
     /**
      * Locally configure all servers that was configured in the Jenkins UI.
      */
-    private void configAllServers(Launcher.ProcStarter launcher, String jfrogBinaryPath, boolean isWindows) throws IOException, InterruptedException {
+    private void configAllServers(Launcher.ProcStarter launcher, TaskListener listener, String jfrogBinaryPath, boolean isWindows) throws IOException, InterruptedException {
+        listener.getLogger().println("win: in configAllServers, isWindows="+isWindows+" jfrogBinaryPath="+jfrogBinaryPath);
         // Config all servers using the 'jf c add' command.
         List<JFrogPlatformInstance> jfrogInstances = getJFrogPlatformInstances();
         if (jfrogInstances != null && jfrogInstances.size() > 0) {
             for (JFrogPlatformInstance jfrogPlatformInstance : jfrogInstances) {
                 // Build 'jf' command
                 ArgumentListBuilder builder = new ArgumentListBuilder();
+                listener.getLogger().println("win: in configAllServers, before addConfigArguments:  "+ "jfrogBinaryPath="+jfrogBinaryPath);
                 addConfigArguments(builder, jfrogPlatformInstance, jfrogBinaryPath);
                 if (isWindows) {
                     builder = builder.toWindowsCommand();
+                    listener.getLogger().println("win: after addConfigArguments, after toWindowsCommand:  "+ "jfrogBinaryPath="+builder.toString());
                 }
                 // Running 'jf' command
                 int exitValue = launcher.cmds(builder).join();
