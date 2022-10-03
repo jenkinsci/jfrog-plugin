@@ -42,11 +42,15 @@ public class Utils {
 
     public static FilePath getWorkspace(Job<?, ?> project) {
         FilePath projectJob = new FilePath(project.getRootDir());
-        FilePath parent = projectJob.getParent();
-        if (parent == null){
-            return null;
+        FilePath workspace = projectJob.getParent();
+        if (workspace == null){
+            throw new RuntimeException("Failed to get job workspace.");
         }
-        return parent.sibling("workspace").child(project.getName());
+        workspace = workspace.sibling("workspace");
+        if (workspace == null){
+            throw new RuntimeException("Failed to get job workspace.");
+        }
+        return workspace.child(project.getName());
     }
 
     public static String getJfrogCliBinaryName(boolean isWindows) {
