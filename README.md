@@ -47,7 +47,7 @@ To have your pipeline jobs run JFrog CLI commands, add the following to your pip
 Define JFrog CLI as a tool, by using the tool name you configured. For example, if you named the tool *jfrog-cli*, add the following to the script: 
 ```groovy
 tools {
-    jfrog "jfrog-cli"
+    jfrog 'jfrog-cli'
 }
 ```
 
@@ -68,7 +68,7 @@ pipeline {
         JFROG_CLI_BUILD_NUMBER = “$BUILD_NUMBER”
     }
     tools {
-        jfrog "jfrog-cli"
+        jfrog 'jfrog-cli'
     }
     stages {
         stage ('Testing') {
