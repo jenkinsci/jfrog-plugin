@@ -7,9 +7,9 @@ This is all achieved by the plugin by wrapping JFrog CLI. Any JFrog CLI command 
 
 ## Installing and configuring the plugin
 1. Install the JFrog Plugin by going to **Manage Jenkins | Manage Plugins**.
-![](install-plugin.png)
+![](images/readme/install-plugin.png)
 2. Configure your JFrog Platform details by going to **Manage Jenkins | Configure System**.
-![](plugin-config.png)
+![](images/readme/plugin-config.png)
 3. Configure JFrog CLI as a tool in Jenkins as described in the [Configuring JFrog CLI as a tool](#configuring-jFrog-cli-as-a-tool) section.
 
 ## Configuring JFrog CLI as a tool
