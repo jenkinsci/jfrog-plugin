@@ -1,5 +1,12 @@
 # Jenkins JFrog Plugin
 
+## Table of contents
+- [Overview?](#overview)
+- [Installing and configuring the plugin](#installing-and-configuring-the-plugin)
+- [Configuring JFrog CLI as a tool](#configuring-jfrog-cli-as-a-tool)
+- [Using JFrog CLI in your pipeline jobs](#using-jfrog-cli-in-your-pipeline-jobs)
+- [Contributions](#contributions)
+
 ## Overview
 The Jenkins JFrog Plugin allows for easy integration between Jenkins and the JFrog Platform.
 This integration allows your build jobs to deploy artifacts and resolve dependencies to and from Artifactory, and then have them linked to the build job that created them. It also allows you to scan your artifacts and builds with JFrog Xray and distribute your software package to remote locations using JFrog Distribution.
@@ -8,7 +15,7 @@ This is all achieved by the plugin by wrapping JFrog CLI. Any JFrog CLI command 
 ## Installing and configuring the plugin
 1. Install the JFrog Plugin by going to **Manage Jenkins | Manage Plugins**.<br><img src="images/readme/install-plugin.png" width="70%">
 2. Configure your JFrog Platform details by going to **Manage Jenkins | Configure System**.<br><img src="images/readme/plugin-config.png" width="30%">
-3. Configure JFrog CLI as a tool in Jenkins as described in the [Configuring JFrog CLI as a tool](#configuring-jFrog-cli-as-a-tool) section.
+3. Configure JFrog CLI as a tool in Jenkins as described in the [Configuring JFrog CLI as a tool](#configuring-jfrog-cli-as-a-tool) section.
 
 ## Configuring JFrog CLI as a tool
 ### General
@@ -16,7 +23,8 @@ To use JFrog CLI in your pipelines jobs, you should configure it as a tool in Je
 
 ### Automatic installation from release.jfrog.io
 If your agent has  access to the internet, you can set the installer to automatically download JFrog CLI from https://releases.jfrog.io as shown in the below screenshot.
-src="images/readme/automatic-installation.png">
+
+<img src="images/readme/automatic-installation.png" width="30%">
 
 ### Automatic installation from Artifactory
 If your agent cannot access the internet, you can set the installer to automatically download JFrog CLI from the JFrog instance you configured in Manage Jenkins | Configure System as shown in the below screenshot. To set this up, follow these steps:
@@ -29,6 +37,7 @@ If your agent cannot access the internet, you can set the installer to automatic
 
 ### Manual installation
 Install JFrog CLI manually on your build agent, and then set the path to the directory which includes the jf executable, as shown in the below screenshot.
+
 <img src="images/readme/manual-installation.png" width="30%">
 
 ## Using JFrog CLI in your pipeline jobs
@@ -88,5 +97,10 @@ pipeline {
 ```groovy
 jf 'rt u test-file my-repo –server-id my-server-id'
 ```
+
+## Contributions
+We welcome code contributions through pull requests from the community.
+
+
 
 
