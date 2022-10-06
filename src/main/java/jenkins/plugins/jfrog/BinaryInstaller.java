@@ -1,14 +1,34 @@
 package jenkins.plugins.jfrog;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import hudson.FilePath;
 import hudson.model.DownloadService;
 import hudson.model.Node;
+import hudson.model.TaskListener;
+import hudson.remoting.VirtualChannel;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstaller;
 import hudson.tools.ToolInstallerDescriptor;
+import jenkins.MasterToSlaveFileCallable;
+import jenkins.plugins.jfrog.artifactoryclient.ArtifactoryClient;
+import jenkins.plugins.jfrog.artifactoryclient.response.ChecksumResponse;
+import jenkins.plugins.jfrog.configuration.Credentials;
+import jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
+import jenkins.plugins.jfrog.plugins.PluginsUtils;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 /**
@@ -17,6 +37,15 @@ import java.util.List;
  * @author gail
  */
 public abstract class BinaryInstaller extends ToolInstaller {
+    /**
+     * The tool's directory name indicates its version.
+     * To indicate the latest version, we will use constant name if no version was provided.
+     */
+    private static final String LATEST = "latest";
+    /**
+     * decoded "[RELEASE]" for thee download url
+     */
+    public static final String RELEASE = "[RELEASE]";
     protected BinaryInstaller(String label) {
         super(label);
     }
@@ -66,6 +95,109 @@ public abstract class BinaryInstaller extends ToolInstaller {
             return clazz.getName().replace('$', '.');
         }
 
+    }
+
+    /**
+     * Download and locate the JFrog CLI binary in the specific build home directory.
+     *
+     * @param toolLocation location of the tool directory on the fileSystem.
+     * @param log          job task listener.
+     * @param v            version. empty string indicates the latest version.
+     * @param instance     JFrogPlatformInstance contains url and credentials needed for the downloading operation.
+     * @param repository   identifies the repository in Artifactory where the CLIs binary is stored.
+     * @throws IOException
+     */
+    private static void downloadJfrogCli(File toolLocation, TaskListener log, String v, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {
+        final String releaseStr = URLEncoder.encode(RELEASE, "UTF-8");
+        // An empty string indicates the latest version.
+        String version = StringUtils.defaultIfBlank(v, releaseStr);
+        String cliUrlSuffix = String.format("/%s/v2-jf/%s/jfrog-cli-%s/%s", repository, version, OsUtils.getOsDetails(), binaryName);
+
+        // Getting credentials
+        String username = "", password = "", accessToken = "";
+        if (instance.getCredentialsConfig() != null) {
+            Credentials credentials = PluginsUtils.credentialsLookup(instance.getCredentialsConfig().getCredentialsId(), null);
+            username = credentials.getUsername();
+            password = credentials.getPassword();
+            accessToken = credentials.getAccessToken();
+        }
+
+        // Downloading binary from Artifactory
+        try (ArtifactoryClient client = new ArtifactoryClient(instance.getArtifactoryUrl(), username, password, accessToken, null, log)){
+            if (shouldDownloadTool(client, cliUrlSuffix, toolLocation)) {
+
+            }
+            try (CloseableHttpResponse downloadResponse = client.download(cliUrlSuffix)) {
+                InputStream input = downloadResponse.getEntity().getContent();
+                if (downloadResponse.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
+                    throw new IOException("Failed downloading JFrog CLI binary: " + downloadResponse.getStatusLine());
+                }
+                if (version.equals(releaseStr)) {
+                    log.getLogger().printf("Download '%s' latest version from: %s%n", binaryName, instance.getArtifactoryUrl() + cliUrlSuffix);
+                } else {
+                    log.getLogger().printf("Download '%s' version %s from: %s%n", binaryName, version, instance.getArtifactoryUrl() + cliUrlSuffix);
+                }
+                File file = new File(toolLocation, binaryName);
+                Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                if (!file.setExecutable(true)) {
+                    throw new IOException("No permission to add execution permission to binary");
+                }
+            }
+        }
+    }
+
+    /**
+     * We should skip the download if the tool's directory already contains the specific version, otherwise we should download it.
+     * A file named 'sha256' contains the specific binary sha256.
+     * If the file sha256 has not changed, we will skip the download, otherwise we will download and overwrite the existing files.
+     * @param client - internal Artifactory Java client.
+     * @param cliUrlSuffix -
+     * @param toolLocation - expected location of the tool on the fileSystem.
+     */
+    private static boolean shouldDownloadTool(ArtifactoryClient client, String cliUrlSuffix, File toolLocation) throws IOException {
+        try (CloseableHttpResponse response = client.fileInfo(cliUrlSuffix)){
+            ChecksumResponse fileInfoResponse = getMapper().readValue(response.getEntity().getContent(), ChecksumResponse.class);
+            String sha256 = fileInfoResponse.getChecksums().getSha256();
+        }
+
+        //        // An empty id indicates the latest version - we would like to override and reinstall the latest tool in this case.
+//        if (StringUtils.isNotBlank(id)) {
+//            if (toolLocation.child(id).child(binaryName).exists()) {
+//                return false;
+//            }
+//        }
+//        String version = id;
+//        if (id.isEmpty()) {
+//            version = LATEST;
+//        }
+//        // Delete old versions if exists
+//        toolLocation.deleteContents();
+//        toolLocation.child(version).mkdirs();
+//        return true;
+    }
+
+    private String buildCliUrlSuffix() {
+
+    }
+
+    public static ObjectMapper getMapper() {
+        return new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
+
+    public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String REPOSITORY, String binaryName) throws IOException, InterruptedException {
+        // Download Jfrog CLI binary
+        if (shouldDownloadTool(toolLocation, version, binaryName)) {
+            toolLocation.act(new MasterToSlaveFileCallable<Void>() {
+                @Override
+                public Void invoke(File f, VirtualChannel channel) throws IOException {
+                    downloadJfrogCli(f, log, version, instance, REPOSITORY, binaryName);
+                    return null;
+                }
+            });
+        }
+        return toolLocation;
     }
 }
 
