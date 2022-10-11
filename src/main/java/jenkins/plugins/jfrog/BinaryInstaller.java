@@ -171,8 +171,12 @@ public abstract class BinaryInstaller extends ToolInstaller {
         if (toolLocation == null) {
             throw new RuntimeException("Empty tool location");
         }
+        File[] listFiles = toolLocation.listFiles();
+        if (listFiles == null){
+            return true;
+        }
         String sha256FileContent = "";
-        for (File file : toolLocation.listFiles()) {
+        for (File file : listFiles) {
             if (SHA256_FILE_NAME.equals(file.getName())) {
                 List<String> lines = Files.readAllLines(Paths.get(file.getPath()));
                 if (lines != null) {
