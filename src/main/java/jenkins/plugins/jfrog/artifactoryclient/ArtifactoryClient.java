@@ -31,7 +31,6 @@ import static jenkins.plugins.jfrog.artifactoryclient.Utils.isBlank;
 public class ArtifactoryClient implements AutoCloseable {
     public static final String ORIGINAL_HOST_CONTEXT_PARAM = "original.host.context.param";
     static final String PING_ENDPOINT = "api/system/ping";
-    static final String FILE_INFO_ENDPOINT = "api/storage/";
     private final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     public static final int TIMEOUT_MILLIS = (int) TimeUnit.MINUTES.toMillis(5);
     private final HttpClientContext clientContext = HttpClientContext.create();

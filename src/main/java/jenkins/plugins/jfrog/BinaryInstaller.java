@@ -41,11 +41,6 @@ import java.util.List;
  */
 public abstract class BinaryInstaller extends ToolInstaller {
     /**
-     * The tool's directory name indicates its version.
-     * To indicate the latest version, we will use constant name if no version was provided.
-     */
-    private static final String LATEST = "latest";
-    /**
      * decoded "[RELEASE]" for thee download url
      */
     private static final String RELEASE = "[RELEASE]";
@@ -193,7 +188,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
     /**
      * Send REST request to Artifactory to get binary's sha256.
      * @param client       - internal Artifactory Java client.
-     * @param cliUrlSuffix - path to the specific JFrog CLI version in Artifactory, will be sent to Artifactory in the sha256 REST request.
+     * @param cliUrlSuffix - path to the specific JFrog CLI version in Artifactory, will be sent to Artifactory in the request.
      * @return binary's sha256
      * @throws IOException
      */
@@ -205,12 +200,6 @@ public abstract class BinaryInstaller extends ToolInstaller {
             }
             return sha256Headers[0].getValue();
         }
-    }
-
-    public static ObjectMapper getMapper() {
-        return new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .setAnnotationIntrospector(new JacksonAnnotationIntrospector())
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String REPOSITORY, String binaryName) throws IOException, InterruptedException {
