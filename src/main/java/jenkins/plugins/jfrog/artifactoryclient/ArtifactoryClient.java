@@ -9,6 +9,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -90,8 +91,8 @@ public class ArtifactoryClient implements AutoCloseable {
         return execute(new HttpGet(s));
     }
 
-    public CloseableHttpResponse fileInfo(String s) throws IOException {
-        return execute(new HttpGet(FILE_INFO_ENDPOINT+s));
+    public CloseableHttpResponse head(String s) throws IOException {
+        return execute(new HttpHead(s));
     }
 
     private CloseableHttpResponse execute(HttpRequestBase request) throws IOException {
