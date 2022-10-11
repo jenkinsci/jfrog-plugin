@@ -180,7 +180,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
                 }
             }
         }
-        if (sha256FileContent.isEmpty()){
+        if (sha256FileContent != null && sha256FileContent.isEmpty()){
             return true;
         }
         // Getting cli binary's sha256 form Artifactory.
