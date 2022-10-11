@@ -171,7 +171,10 @@ public abstract class BinaryInstaller extends ToolInstaller {
         String sha256FileContent = "";
         for (File file : toolLocation.listFiles()) {
             if (SHA256_FILE_NAME.equals(file.getName())) {
-                sha256FileContent = Files.readAllLines(Paths.get(file.getPath())).get(0);
+                List<String> lines = Files.readAllLines(Paths.get(file.getPath()));
+                if (lines != null) {
+                    sha256FileContent = lines.get(0);
+                }
             }
         }
         if (sha256FileContent.isEmpty()){
