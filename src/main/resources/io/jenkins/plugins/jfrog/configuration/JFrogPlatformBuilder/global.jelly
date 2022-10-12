@@ -1,0 +1,56 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form"
+         xmlns:st="jelly:stapler"
+         xmlns:r="/lib/jfrog"
+         xmlns:c="/lib/credentials">
+    <st:adjunct includes="lib.jfrog.repos.credentials"/>
+    <f:section title="JFrog Plugin Configuration">
+        <f:entry title="JFrog Platform Instances"
+                 description="List of JFrog Platform instances to be used by jobs">
+            <f:repeatable name="jfrogInstances" var="instance" items="${descriptor.jfrogInstances}"
+                          header="JFrog Platform details" add="${%Add JFrog Platform Instance}">
+                <input type="hidden" name="stapler-class"
+                       value="io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance"/>
+                <r:blockWrapper style="width:100%">
+                    <f:entry title="Server ID">
+                        <f:textbox field="serverId" value="${instance.serverId}"/>
+                    </f:entry>
+                    <f:entry title="JFrog Platform URL" field="platformUrl">
+                        <f:textbox field="platformUrl" value="${instance.url}"/>
+                    </f:entry>
+                    <f:section name="credentialsConfig">
+                        <f:block>
+                            <input type="hidden" name="stapler-class"
+                                   value="io.jenkins.plugins.jfrog.configuration.CredentialsConfig"/>
+                            <r:blockWrapper style="width:100%"
+                                            id="credentialsConfig${instance.credentialsConfig}">
+                                <f:entry title="${%Credentials}" field="credentialsId">
+                                    <c:select default="${instance.credentialsConfig.credentialsId}"/>
+                                </f:entry>
+                            </r:blockWrapper>
+                        </f:block>
+                    </f:section>
+                    <f:advanced title="Advanced Configuration">
+                        <f:section title="Advanced Configuration">
+                            <f:entry title="JFrog Artifactory URL">
+                                <f:textbox field="artifactoryUrl" value="${instance.artifactoryUrl}"/>
+                            </f:entry>
+                            <f:entry title="JFrog Distribution URL">
+                                <f:textbox field="distributionUrl" value="${instance.distributionUrl}"/>
+                            </f:entry>
+                            <f:entry title="JFrog Xray URL">
+                                <f:textbox field="xrayUrl" value="${instance.xrayUrl}"/>
+                            </f:entry>
+                        </f:section>
+                    </f:advanced>
+                </r:blockWrapper>
+                <f:block>
+                    <div align="right">
+                        <f:repeatableDeleteButton/>
+                    </div>
+                </f:block>
+            </f:repeatable>
+        </f:entry>
+    </f:section>
+</j:jelly>
