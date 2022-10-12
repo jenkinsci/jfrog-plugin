@@ -167,7 +167,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
     private static boolean shouldDownloadTool(ArtifactoryClient client, String cliUrlSuffix, File toolLocation) throws IOException {
         // Looking for the sha256 file in the tool directory
         Path path = toolLocation.toPath().resolve(SHA256_FILE_NAME);
-        if (!Files.exists(path)) {
+        if (path == null || !Files.exists(path)) {
             return true;
         }
         // Getting cli binary's sha256 form Artifactory.
