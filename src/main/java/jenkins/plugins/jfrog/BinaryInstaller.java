@@ -1,9 +1,5 @@
 package jenkins.plugins.jfrog;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import hudson.FilePath;
 import hudson.model.DownloadService;
 import hudson.model.Node;
@@ -30,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -106,15 +103,15 @@ public abstract class BinaryInstaller extends ToolInstaller {
      *
      * @param toolLocation location of the tool directory on the fileSystem.
      * @param log          job task listener.
-     * @param v            version. empty string indicates the latest version.
+     * @param providedVersion            version provided by the user. empty string indicates the latest version.
      * @param instance     JFrogPlatformInstance contains url and credentials needed for the downloading operation.
      * @param repository   identifies the repository in Artifactory where the CLIs binary is stored.
      * @throws IOException
      */
-    private static void downloadJfrogCli(File toolLocation, TaskListener log, String v, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {
+    private static void downloadJfrogCli(File toolLocation, TaskListener log, String providedVersion, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {
         final String releaseStr = URLEncoder.encode(RELEASE, "UTF-8");
         // An empty string indicates the latest version.
-        String version = StringUtils.defaultIfBlank(v, releaseStr);
+        String version = StringUtils.defaultIfBlank(providedVersion, releaseStr);
         String cliUrlSuffix = String.format("/%s/v2-jf/%s/jfrog-cli-%s/%s", repository, version, OsUtils.getOsDetails(), binaryName);
 
         // Getting credentials
@@ -168,33 +165,13 @@ public abstract class BinaryInstaller extends ToolInstaller {
      */
     private static boolean shouldDownloadTool(ArtifactoryClient client, String cliUrlSuffix, File toolLocation) throws IOException {
         // Looking for the sha256 file in the tool directory
-        if (toolLocation == null) {
-            throw new RuntimeException("Empty tool location");
-        }
-        File[] listFiles = toolLocation.listFiles();
-        if (listFiles == null){
-            return true;
-        }
-        String sha256FileContent = "";
-        for (File file : listFiles) {
-            if (SHA256_FILE_NAME.equals(file.getName())) {
-                List<String> lines = Files.readAllLines(Paths.get(file.getPath()));
-                if (lines != null) {
-                    sha256FileContent = lines.get(0);
-                }
-            }
-        }
-        if (sha256FileContent == null || sha256FileContent.isEmpty()){
+        Path path = toolLocation.toPath().resolve(SHA256_FILE_NAME);
+        if (!Files.exists(path)) {
             return true;
         }
         // Getting cli binary's sha256 form Artifactory.
         String artifactorySha256 = getArtifactSha256(client, cliUrlSuffix);
-        if (artifactorySha256 != null) {
-            if (sha256FileContent.equals(artifactorySha256)) {
-                return false;
-            }
-        }
-        return true;
+        return path.equals(artifactorySha256);
     }
 
     /**
