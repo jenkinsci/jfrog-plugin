@@ -41,15 +41,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
     /**
      * decoded "[RELEASE]" for thee download url
      */
-    private static final String RELEASE;
-
-    static {
-        try {
-            RELEASE = URLEncoder.encode("[RELEASE]", StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static final String RELEASE = "%5BRELEASE%5D";
 
     /**
      * The name of the file that contains the JFrog CLI binary sha256.
