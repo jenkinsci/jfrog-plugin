@@ -22,14 +22,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+
 
 /**
  * Installer for JFrog CLI binary.
@@ -40,7 +41,16 @@ public abstract class BinaryInstaller extends ToolInstaller {
     /**
      * decoded "[RELEASE]" for thee download url
      */
-    private static final String RELEASE = "[RELEASE]";
+    private static final String RELEASE;
+
+    static {
+        try {
+            RELEASE = URLEncoder.encode("[RELEASE]", StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * The name of the file that contains the JFrog CLI binary sha256.
      * The file will help us determine if we should download an updated version or skip it.
@@ -101,17 +111,16 @@ public abstract class BinaryInstaller extends ToolInstaller {
     /**
      * Download and locate the JFrog CLI binary in the specific build home directory.
      *
-     * @param toolLocation location of the tool directory on the fileSystem.
-     * @param log          job task listener.
-     * @param providedVersion            version provided by the user. empty string indicates the latest version.
-     * @param instance     JFrogPlatformInstance contains url and credentials needed for the downloading operation.
-     * @param repository   identifies the repository in Artifactory where the CLIs binary is stored.
-     * @throws IOException
+     * @param toolLocation    location of the tool directory on the fileSystem.
+     * @param log             job task listener.
+     * @param providedVersion version provided by the user. empty string indicates the latest version.
+     * @param instance        JFrogPlatformInstance contains url and credentials needed for the downloading operation.
+     * @param repository      identifies the repository in Artifactory where the CLIs binary is stored.
+     * @throws IOException    in case of any I/O error.
      */
     private static void downloadJfrogCli(File toolLocation, TaskListener log, String providedVersion, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException {
-        final String releaseStr = URLEncoder.encode(RELEASE, "UTF-8");
         // An empty string indicates the latest version.
-        String version = StringUtils.defaultIfBlank(providedVersion, releaseStr);
+        String version = StringUtils.defaultIfBlank(providedVersion, RELEASE);
         String cliUrlSuffix = String.format("/%s/v2-jf/%s/jfrog-cli-%s/%s", repository, version, OsUtils.getOsDetails(), binaryName);
 
         // Getting credentials
@@ -131,7 +140,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
                     if (downloadResponse.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK) {
                         throw new IOException("Failed downloading JFrog CLI binary: " + downloadResponse.getStatusLine());
                     }
-                    if (version.equals(releaseStr)) {
+                    if (version.equals(RELEASE)) {
                         log.getLogger().printf("Download '%s' latest version from: %s%n", binaryName, instance.getArtifactoryUrl() + cliUrlSuffix);
                     } else {
                         log.getLogger().printf("Download '%s' version %s from: %s%n", binaryName, version, instance.getArtifactoryUrl() + cliUrlSuffix);
@@ -176,10 +185,11 @@ public abstract class BinaryInstaller extends ToolInstaller {
 
     /**
      * Send REST request to Artifactory to get binary's sha256.
+     *
      * @param client       - internal Artifactory Java client.
      * @param cliUrlSuffix - path to the specific JFrog CLI version in Artifactory, will be sent to Artifactory in the request.
      * @return binary's sha256
-     * @throws IOException
+     * @throws IOException in case of any I/O error.
      */
     private static String getArtifactSha256(ArtifactoryClient client, String cliUrlSuffix) throws IOException {
         try (CloseableHttpResponse response = client.head(cliUrlSuffix)) {
@@ -191,12 +201,12 @@ public abstract class BinaryInstaller extends ToolInstaller {
         }
     }
 
-    public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String REPOSITORY, String binaryName) throws IOException, InterruptedException {
+    public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException, InterruptedException {
         // Download Jfrog CLI binary
         toolLocation.act(new MasterToSlaveFileCallable<Void>() {
             @Override
             public Void invoke(File f, VirtualChannel channel) throws IOException {
-                downloadJfrogCli(f, log, version, instance, REPOSITORY, binaryName);
+                downloadJfrogCli(f, log, version, instance, repository, binaryName);
                 return null;
             }
         });

@@ -20,11 +20,11 @@ public class Utils {
     public static FilePath getWorkspace(Job<?, ?> project) {
         FilePath projectJob = new FilePath(project.getRootDir());
         FilePath workspace = projectJob.getParent();
-        if (workspace == null){
+        if (workspace == null) {
             throw new RuntimeException("Failed to get job workspace.");
         }
         workspace = workspace.sibling("workspace");
-        if (workspace == null){
+        if (workspace == null) {
             throw new RuntimeException("Failed to get job workspace.");
         }
         return workspace.child(project.getName());
@@ -64,10 +64,10 @@ public class Utils {
             @Override
             public FilePath call() {
                 FilePath tempDir = ws.sibling(ws.getName() + Objects.toString(workspaceList, "@") + "tmp");
-                        if (tempDir == null){
-                            throw new RuntimeException("Failed to create JFrog CLI temporary directory");
-                        }
-                        tempDir =  tempDir.child("jfrog");
+                if (tempDir == null) {
+                    throw new RuntimeException("Failed to create JFrog CLI temporary directory");
+                }
+                tempDir = tempDir.child("jfrog");
                 File tempDirFile = new File(tempDir.getRemote());
                 if (tempDirFile.mkdirs()) {
                     tempDirFile.deleteOnExit();
