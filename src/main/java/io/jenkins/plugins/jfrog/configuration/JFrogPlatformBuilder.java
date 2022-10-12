@@ -61,7 +61,8 @@ public class JFrogPlatformBuilder extends GlobalConfiguration {
          */
         @SuppressWarnings("unused")
         public FormValidation doCheckServerId(@QueryParameter String value) {
-            if (value.length() == 0) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            if (StringUtils.isBlank(value)) {
                 return FormValidation.error("Please set server ID");
             }
             List<JFrogPlatformInstance> JFrogPlatformInstances = getJFrogPlatformInstances();
@@ -88,7 +89,8 @@ public class JFrogPlatformBuilder extends GlobalConfiguration {
          */
         @SuppressWarnings("unused")
         public FormValidation doCheckPlatformUrl(@QueryParameter String value) {
-            if (value.length() == 0) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            if (StringUtils.isBlank(value)) {
                 return FormValidation.error("Please set platform URL");
             }
             return FormValidation.ok();
