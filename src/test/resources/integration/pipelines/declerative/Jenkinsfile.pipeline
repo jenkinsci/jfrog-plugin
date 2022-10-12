@@ -3,7 +3,7 @@ package integration.pipelines.declarative
 pipeline {
     agent any
     tools {
-        "jenkins.plugins.jfrog.JfrogInstallation" "cli"
+        "JfrogInstallation" "cli"
     }
     stages {
         stage('Build') {
