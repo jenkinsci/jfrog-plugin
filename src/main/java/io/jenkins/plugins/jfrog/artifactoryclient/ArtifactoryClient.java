@@ -9,6 +9,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -30,7 +31,6 @@ import static io.jenkins.plugins.jfrog.artifactoryclient.Utils.isBlank;
 public class ArtifactoryClient implements AutoCloseable {
     public static final String ORIGINAL_HOST_CONTEXT_PARAM = "original.host.context.param";
     static final String PING_ENDPOINT = "api/system/ping";
-
     private final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
     public static final int TIMEOUT_MILLIS = (int) TimeUnit.MINUTES.toMillis(5);
     private final HttpClientContext clientContext = HttpClientContext.create();
@@ -88,6 +88,10 @@ public class ArtifactoryClient implements AutoCloseable {
 
     public CloseableHttpResponse download(String s) throws IOException {
         return execute(new HttpGet(s));
+    }
+
+    public CloseableHttpResponse head(String s) throws IOException {
+        return execute(new HttpHead(s));
     }
 
     private CloseableHttpResponse execute(HttpRequestBase request) throws IOException {
