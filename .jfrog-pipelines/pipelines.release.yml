@@ -36,7 +36,7 @@ pipelines:
             # Configure git
             - git checkout main
             - git remote set-url origin https://$int_il_automation_token@github.com/jfrog/jenkins-jfrog-plugin.git
-            - git remote set-url upstream https://$int_il_automation_token@github.com/jenkinsci/jenkins-jfrog-plugin.git
+            - git remote add upstream https://$int_il_automation_token@github.com/jenkinsci/jenkins-jfrog-plugin.git
 
             # Make sure versions provided
             - echo "Checking variables"
