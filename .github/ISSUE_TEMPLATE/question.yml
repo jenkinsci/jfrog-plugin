@@ -8,6 +8,6 @@ body:
   - type: textarea
     id: question
     attributes:
-    label: How can we help?
+      label: How can we help?
     validations:
-    required: true
+      required: true
