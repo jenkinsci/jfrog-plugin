@@ -22,7 +22,7 @@ pipelines:
           integrations:
             - name: il_automation
             - name: entplus_deployer
-            - name: jenkins_artifactory
+            - name: jenkins_artifactory_jfrog_plugin
         execution:
           onExecute:
             - cd $res_jenkinsJFrogReleaseGit_resourcePath
@@ -73,7 +73,7 @@ pipelines:
             - jf ds rbd jfrog-jenkins-plugin $NEXT_VERSION --site="releases.jfrog.io" --sync
 
             # Upload plugin to Jenkins Artifactory server
-            - jf c add jenkins --url=$int_jenkins_artifactory_url --user=$int_jenkins_artifactory_user --password=$int_jenkins_artifactory_password --enc-password=false
+            - jf c add jenkins --url=$int_jenkins_artifactory_jfrog_plugin_url --user=$int_jenkins_artifactory_jfrog_plugin_user --password=$int_jenkins_artifactory_jfrog_plugin_password --enc-password=false
             - jf mvnc
               --server-id-resolve internal --repo-resolve-releases ecosys-jenkins-repos --repo-resolve-snapshots ecosys-releases-snapshots
               --server-id-deploy jenkins --repo-deploy-releases releases --repo-deploy-snapshots snapshots

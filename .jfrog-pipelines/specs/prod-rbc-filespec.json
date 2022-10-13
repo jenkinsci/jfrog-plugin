@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "pattern": "ecosys-oss-release-local/(io/jenkins/plugins/jfrog/${version}/jfrog-*)",
+      "target": "oss-release-local/{1}"
+    }
+  ]
+}

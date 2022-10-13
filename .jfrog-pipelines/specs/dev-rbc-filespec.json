@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "pattern": "ecosys-oss-snapshot-local/(io/jenkins/plugins/jfrog/*/jfrog-*)",
+      "target": "oss-snapshot-local/{1}"
+    }
+  ]
+}
