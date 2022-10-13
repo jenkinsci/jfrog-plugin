@@ -173,7 +173,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
         // Getting cli binary's sha256 form Artifactory.
         String artifactorySha256 = getArtifactSha256(client, cliUrlSuffix);
         String fileContent = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
-        return StringUtils.equals(fileContent, artifactorySha256);
+        return !StringUtils.equals(fileContent, artifactorySha256);
     }
 
     /**
