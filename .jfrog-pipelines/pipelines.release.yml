@@ -4,10 +4,9 @@ pipelines:
       runtime:
         type: image
         image:
-          auto:
-            language: java
-            versions:
-              - "11.0.0"
+          custom:
+            name: releases-docker.jfrog.io/jfrog-ecosystem-integration-env
+            tag: 1.9.0
       environmentVariables:
         readOnly:
           NEXT_VERSION: 0.0.0
@@ -22,7 +21,7 @@ pipelines:
           integrations:
             - name: il_automation
             - name: entplus_deployer
-            - name: jenkins_artifactory
+            - name: jenkins_artifactory_jfrog_plugin
         execution:
           onExecute:
             - cd $res_jenkinsJFrogReleaseGit_resourcePath
@@ -37,7 +36,7 @@ pipelines:
             # Configure git
             - git checkout main
             - git remote set-url origin https://$int_il_automation_token@github.com/jfrog/jenkins-jfrog-plugin.git
-            - git remote set-url upstream https://$int_il_automation_token@github.com/jenkinsci/jenkins-jfrog-plugin.git
+            - git remote add upstream https://$int_il_automation_token@github.com/jenkinsci/jenkins-jfrog-plugin.git
 
             # Make sure versions provided
             - echo "Checking variables"
@@ -69,11 +68,11 @@ pipelines:
             - jf rt bp
 
             # Distribute release bundle
-            - jf ds rbc jfrog-jenkins-plugin $NEXT_VERSION --spec=./release/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
+            - jf ds rbc jfrog-jenkins-plugin $NEXT_VERSION --spec=./.jfrog-pipelines/specs/prod-rbc-filespec.json --spec-vars="version=$NEXT_VERSION" --sign
             - jf ds rbd jfrog-jenkins-plugin $NEXT_VERSION --site="releases.jfrog.io" --sync
 
             # Upload plugin to Jenkins Artifactory server
-            - jf c add jenkins --url=$int_jenkins_artifactory_url --user=$int_jenkins_artifactory_user --password=$int_jenkins_artifactory_password --enc-password=false
+            - jf c add jenkins --url=$int_jenkins_artifactory_jfrog_plugin_url --user=$int_jenkins_artifactory_jfrog_plugin_user --password=$int_jenkins_artifactory_jfrog_plugin_password --enc-password=false
             - jf mvnc
               --server-id-resolve internal --repo-resolve-releases ecosys-jenkins-repos --repo-resolve-snapshots ecosys-releases-snapshots
               --server-id-deploy jenkins --repo-deploy-releases releases --repo-deploy-snapshots snapshots

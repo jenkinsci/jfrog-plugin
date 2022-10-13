@@ -4,10 +4,9 @@ pipelines:
       runtime:
         type: image
         image:
-          auto:
-            language: java
-            versions:
-              - "11.0.0"
+          custom:
+            name: releases-docker.jfrog.io/jfrog-ecosystem-integration-env
+            tag: 1.9.0
 
     steps:
       - name: Snapshot
@@ -54,7 +53,7 @@ pipelines:
             - jf rt bp
 
             # Distribute release bundle
-            - jf ds rbc jfrog-jenkins-plugin-snapshot $run_number --spec=./release/specs/dev-rbc-filespec.json --sign
+            - jf ds rbc jfrog-jenkins-plugin-snapshot $run_number --spec=./.jfrog-pipelines/specs/dev-rbc-filespec.json --sign
             - jf ds rbd jfrog-jenkins-plugin-snapshot $run_number --site="releases.jfrog.io" --sync
 
           onComplete:

@@ -32,7 +32,7 @@ public class ReleasesInstaller extends BinaryInstaller {
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         JFrogPlatformInstance server = new JFrogPlatformInstance(StringUtils.EMPTY, StringUtils.EMPTY, null, RELEASES_ARTIFACTORY_URL, StringUtils.EMPTY, StringUtils.EMPTY);
         String binaryName = Utils.getJfrogCliBinaryName(!node.createLauncher(log).isUnix());
-        return Utils.performJfrogCliInstallation(getToolLocation(tool, node), log, id, server, REPOSITORY, binaryName);
+        return performJfrogCliInstallation(getToolLocation(tool, node), log, id, server, REPOSITORY, binaryName);
     }
 
     @Extension
