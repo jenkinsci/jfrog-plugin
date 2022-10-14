@@ -36,7 +36,7 @@ pipelines:
             # Configure git
             - git checkout main
             - git remote set-url origin https://$int_il_automation_token@github.com/jfrog/jenkins-jfrog-plugin.git
-            - git remote add upstream https://$int_il_automation_token@github.com/jenkinsci/jenkins-jfrog-plugin.git
+            - git remote add upstream https://$int_il_automation_token@github.com/jenkinsci/jfrog-plugin.git
 
             # Make sure versions provided
             - echo "Checking variables"
@@ -55,7 +55,7 @@ pipelines:
             # Update version
             - env -i PATH=$PATH M2_HOME=$M2_HOME HOME=$HOME jf mvn versions:set -DnewVersion="${NEXT_VERSION}" -B
             - git commit -am "[jfrog-release] Release version ${NEXT_VERSION} [skipRun]" --allow-empty
-            - git tag ${NEXT_VERSION}
+            - git tag jfrog-${NEXT_VERSION}
 
             # Run install and publish
             - >
