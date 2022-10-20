@@ -1,7 +1,15 @@
+[![](images/readme/intro.png)](#readme)
+
+<div align="center">
+
 # Jenkins JFrog Plugin
 
+[![Tests](https://github.com/jfrog/jenkins-jfrog-plugin/actions/workflows/tests.yml/badge.svg)](https://github.com/jfrog/jenkins-jfrog-plugin/actions/workflows/tests.yml) [![Static Analysis](https://github.com/jfrog/jenkins-jfrog-plugin/actions/workflows/analysis.yml/badge.svg)](https://github.com/jfrog/jenkins-jfrog-plugin/actions/workflows/analysis.yml)
+
+</div>
+
 ## Table of contents
-- [Overview?](#overview)
+- [Overview](#overview)
 - [Installing and configuring the plugin](#installing-and-configuring-the-plugin)
 - [Configuring JFrog CLI as a tool](#configuring-jfrog-cli-as-a-tool)
 - [Using JFrog CLI in your pipeline jobs](#using-jfrog-cli-in-your-pipeline-jobs)
