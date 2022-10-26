@@ -59,14 +59,17 @@ public class Credentials implements Serializable {
         return Secret.toString(accessToken);
     }
 
+    @SuppressWarnings("unused")
     public void setAccessToken(Secret accessToken) {
         this.accessToken = accessToken;
     }
 
+    @SuppressWarnings("unused")
     public void setUsername(Secret username) {
         this.username = username;
     }
 
+    @SuppressWarnings("unused")
     public void setPassword(Secret password) {
         this.password = password;
     }

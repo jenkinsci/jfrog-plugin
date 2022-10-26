@@ -1,4 +1,4 @@
-package io.jenkins.plugins.jfrog.declarative;
+package io.jenkins.plugins.jfrog;
 
 import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.EnvVars;
@@ -6,18 +6,18 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ArgumentListBuilder;
-import io.jenkins.plugins.jfrog.Utils;
+import io.jenkins.cli.shaded.org.apache.commons.io.FilenameUtils;
 import io.jenkins.plugins.jfrog.configuration.Credentials;
 import io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder;
 import io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
 import io.jenkins.plugins.jfrog.plugins.PluginsUtils;
 import jenkins.tasks.SimpleBuildStep;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jenkinsci.Symbol;
@@ -87,7 +87,7 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
             Launcher.ProcStarter jfLauncher = launcher.launch().envs(env).pwd(workspace).stdout(listener);
             // Configure all servers, skip if all server ids have already been configured.
             if (shouldConfig(jfrogHomeTempDir)) {
-                configAllServers(jfLauncher, jfrogBinaryPath, !launcher.isUnix());
+                configAllServers(jfLauncher, jfrogBinaryPath, isWindows, run.getParent());
             }
             // Running the 'jf' command
             int exitValue = jfLauncher.cmds(builder).join();
@@ -119,14 +119,14 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
     /**
      * Locally configure all servers that was configured in the Jenkins UI.
      */
-    private void configAllServers(Launcher.ProcStarter launcher, String jfrogBinaryPath, boolean isWindows) throws IOException, InterruptedException {
+    private void configAllServers(Launcher.ProcStarter launcher, String jfrogBinaryPath, boolean isWindows, Job<?, ?> job) throws IOException, InterruptedException {
         // Config all servers using the 'jf c add' command.
         List<JFrogPlatformInstance> jfrogInstances = JFrogPlatformBuilder.getJFrogPlatformInstances();
         if (jfrogInstances != null && jfrogInstances.size() > 0) {
             for (JFrogPlatformInstance jfrogPlatformInstance : jfrogInstances) {
                 // Build 'jf' command
                 ArgumentListBuilder builder = new ArgumentListBuilder();
-                addConfigArguments(builder, jfrogPlatformInstance, jfrogBinaryPath);
+                addConfigArguments(builder, jfrogPlatformInstance, jfrogBinaryPath, job);
                 if (isWindows) {
                     builder = builder.toWindowsCommand();
                 }
@@ -139,15 +139,15 @@ public class JfStep<T> extends Builder implements SimpleBuildStep {
         }
     }
 
-    private void addConfigArguments(ArgumentListBuilder builder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath) {
+    private void addConfigArguments(ArgumentListBuilder builder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath, Job<?, ?> job) {
         String credentialsId = jfrogPlatformInstance.getCredentialsConfig().getCredentialsId();
         builder.add(jfrogBinaryPath).add("c").add("add").add(jfrogPlatformInstance.getId());
         // Add credentials
-        StringCredentials accessTokenCredentials = PluginsUtils.accessTokenCredentialsLookup(credentialsId);
+        StringCredentials accessTokenCredentials = PluginsUtils.accessTokenCredentialsLookup(credentialsId, job);
         if (accessTokenCredentials != null) {
             builder.addMasked("--access-token=" + accessTokenCredentials.getSecret().getPlainText());
         } else {
-            Credentials credentials = PluginsUtils.credentialsLookup(credentialsId, null);
+            Credentials credentials = PluginsUtils.credentialsLookup(credentialsId, job);
             builder.add("--user=" + credentials.getUsername());
             builder.addMasked("--password=" + credentials.getPassword());
         }

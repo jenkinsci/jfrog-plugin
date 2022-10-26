@@ -19,9 +19,10 @@ import static com.cloudbees.plugins.credentials.CredentialsProvider.lookupCreden
 
 
 public class PluginsUtils {
-    public static StringCredentials accessTokenCredentialsLookup(String credentialsId) {
+    @SuppressWarnings("deprecation") // deprecated lookupCredentials
+    public static StringCredentials accessTokenCredentialsLookup(String credentialsId, Item item) {
         return CredentialsMatchers.firstOrNull(
-                lookupCredentials(StringCredentials.class, (Item) null),
+                lookupCredentials(StringCredentials.class, item),
                 CredentialsMatchers.withId(credentialsId)
         );
     }
@@ -33,9 +34,10 @@ public class PluginsUtils {
      * @param item          some item (job or folder).
      * @return credentials. an empty field can't be null, will be represented by empty string.
      */
+    @SuppressWarnings("deprecation") // deprecated lookupCredentials
     public static Credentials credentialsLookup(String credentialsId, Item item) {
         // Looking for accessToken
-        StringCredentials accessCred = PluginsUtils.accessTokenCredentialsLookup(credentialsId);
+        StringCredentials accessCred = PluginsUtils.accessTokenCredentialsLookup(credentialsId, item);
         if (accessCred != null) {
             return new Credentials(Credentials.EMPTY_SECRET, Credentials.EMPTY_SECRET, accessCred.getSecret());
         } else {
