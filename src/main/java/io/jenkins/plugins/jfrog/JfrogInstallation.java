@@ -37,8 +37,9 @@ public class JfrogInstallation extends ToolInstallation
     public static final String JFROG_CLI_USER_AGENT = "JFROG_CLI_USER_AGENT";
     public static final String JfrogDependenciesDirName = "dependencies";
 
+
     @DataBoundConstructor
-    public JfrogInstallation(String name, String home, List<? extends ToolProperty<?>> properties) {
+    public JfrogInstallation(String name, String home, List<? extends ToolProperty<?>> properties ){
         super(name, home, properties);
     }
 

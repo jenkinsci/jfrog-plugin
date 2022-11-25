@@ -34,6 +34,9 @@ public abstract class BinaryInstaller extends ToolInstaller {
      */
     private static final String RELEASE = "[RELEASE]";
 
+
+
+    private final String version;
     /**
      * The name of the file that contains the JFrog CLI binary sha256.
      * The file will help us determine if we should download an updated version or skip it.
@@ -41,7 +44,12 @@ public abstract class BinaryInstaller extends ToolInstaller {
     private static final String SHA256_FILE_NAME = "sha256";
 
     protected BinaryInstaller(String label) {
+        this(label, RELEASE);
+    }
+
+    protected BinaryInstaller(String label, String version) {
         super(label);
+        this.version=version;
     }
 
     /**
@@ -162,6 +170,10 @@ public abstract class BinaryInstaller extends ToolInstaller {
             }
         });
         return toolLocation;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }
 

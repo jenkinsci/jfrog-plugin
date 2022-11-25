@@ -29,10 +29,14 @@ public class ArtifactoryInstaller extends BinaryInstaller {
     public final String repository;
 
     @DataBoundConstructor
-    public ArtifactoryInstaller(String id, String repository) {
-        super(null);
+    public ArtifactoryInstaller(String id, String repository, String version) {
+        super(null,version);
         this.serverId = id;
         this.repository = repository;
+    }
+
+    public ArtifactoryInstaller(String id, String repository) {
+        this(id, repository, "");
     }
 
     @Override
@@ -42,7 +46,7 @@ public class ArtifactoryInstaller extends BinaryInstaller {
             throw new IOException("Server id '" + serverId + "' doesn't exists.");
         }
         String binaryName = Utils.getJfrogCliBinaryName(!node.createLauncher(log).isUnix());
-        return performJfrogCliInstallation(getToolLocation(tool, node), log, StringUtils.EMPTY, server, repository, binaryName);
+        return performJfrogCliInstallation(getToolLocation(tool, node), log, getVersion(), server, repository, binaryName);
     }
 
     /**
@@ -50,14 +54,14 @@ public class ArtifactoryInstaller extends BinaryInstaller {
      */
     private JFrogPlatformInstance getSpecificServer(String id) {
         List<JFrogPlatformInstance> jfrogInstances = JFrogPlatformBuilder.getJFrogPlatformInstances();
-        if (jfrogInstances != null && jfrogInstances.size() > 0) {
+        if (jfrogInstances != null && !jfrogInstances.isEmpty()) {
             for (JFrogPlatformInstance jfrogPlatformInstance : jfrogInstances) {
                 if (jfrogPlatformInstance.getId().equals(id)) {
                     // Getting credentials
                     // We sent a null item to 'credentialsLookup' since we do not know which job will be running at the time of installation, and we don't have the relevant 'Run' object yet.
                     // Therefore, when downloading the CLI from the user's Artifactory remote repository, we should use global credentials.
-                    Credentials credentials = PluginsUtils.credentialsLookup(id, null);
-                    jfrogPlatformInstance.setCredentialsConfig(new CredentialsConfig(id, credentials));
+                    Credentials credentials = PluginsUtils.credentialsLookup( jfrogPlatformInstance.getCredentialsConfig().getCredentialsId(), null);
+                    jfrogPlatformInstance.setCredentialsConfig(new CredentialsConfig(jfrogPlatformInstance.getCredentialsConfig().getCredentialsId(), credentials));
                     return jfrogPlatformInstance;
                 }
             }

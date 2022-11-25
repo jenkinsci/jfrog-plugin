@@ -9,5 +9,9 @@
         <f:entry title="${%Remote JFrog CLI repository}" field="repository">
             <f:textbox/>
         </f:entry>
+        <f:entry title="${%Version}" field="version">
+            <f:entry title="(Leave empty to get the latest version)"/>
+            <f:textbox/>
+        </f:entry>
     </f:entry>
 </j:jelly>

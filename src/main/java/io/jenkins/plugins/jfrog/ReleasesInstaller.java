@@ -20,21 +20,19 @@ import java.io.IOException;
  * @author gail
  */
 public class ReleasesInstaller extends BinaryInstaller {
-    public final String id;
     public static final String RELEASES_ARTIFACTORY_URL = "https://releases.jfrog.io/artifactory";
     public static final String REPOSITORY = "jfrog-cli";
 
     @DataBoundConstructor
     public ReleasesInstaller(String id) {
-        super(null);
-        this.id = id;
+        super(null, id);
     }
 
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         JFrogPlatformInstance instance = createReleasesPlatformInstance();
         String binaryName = Utils.getJfrogCliBinaryName(!node.createLauncher(log).isUnix());
-        return performJfrogCliInstallation(getToolLocation(tool, node), log, id, instance, REPOSITORY, binaryName);
+        return performJfrogCliInstallation(getToolLocation(tool, node), log, getVersion(), instance, REPOSITORY, binaryName);
     }
 
     /**
