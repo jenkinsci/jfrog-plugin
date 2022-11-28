@@ -115,7 +115,16 @@ jf 'rt u test-file my-repo –server-id my-server-id'
 ```
 
 ## Contributions
-We welcome code contributions through pull requests from the community.
+
+JFrog welcomes community contribution through pull requests.
+
+### Important:
+
+The plugin code is stored in two GitHub repositories:
+https://github.com/jfrog/jenkins-jfrog-plugin and
+https://github.com/jenkinsci/jfrog-plugin
+
+Please make sure to submit pull requests to *https://github.com/jfrog/jenkins-jfrog-plugin* only.
 
 
 
