@@ -69,7 +69,7 @@ public class JfrogInstallation extends ToolInstallation
     }
 
     private String getPluginVersion() {
-        Jenkins jenkins =  Jenkins.getInstanceOrNull();
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
         if (jenkins == null) {
             return "";
         }
@@ -88,9 +88,9 @@ public class JfrogInstallation extends ToolInstallation
 
     @Symbol("jfrog")
     @Extension
-    public static final class Descriptor extends ToolDescriptor<JfrogInstallation> {
+    public static final class DescriptorImpl extends ToolDescriptor<JfrogInstallation> {
 
-        public Descriptor() {
+        public DescriptorImpl() {
             super(JfrogInstallation.class);
             load();
         }

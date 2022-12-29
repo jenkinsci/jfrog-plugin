@@ -19,5 +19,17 @@ jobs:
           java-version: "11"
           distribution: "temurin"
 
+      - name: Setup Artifactory
+        run: |
+          go install github.com/jfrog/jfrog-testing-infra/local-rt-setup@latest
+          ~/go/bin/local-rt-setup
+        env:
+          RTLIC: ${{secrets.RTLIC}}
+          GOPROXY: direct
+
       - name: Run tests
-        run: mvn -V -B -U --no-transfer-progress test
+        env:
+          JFROG_URL: "http://localhost:8081/"
+          JFROG_USERNAME: "admin"
+          JFROG_PASSWORD: "password"
+        run: mvn -V -B -U --no-transfer-progress clean verify -DskipITs=false "-Dfindbugs.failOnError=false"

@@ -5,7 +5,6 @@ import hudson.FilePath;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.tools.ToolInstallation;
-import io.jenkins.plugins.jfrog.configuration.Credentials;
 import io.jenkins.plugins.jfrog.configuration.CredentialsConfig;
 import io.jenkins.plugins.jfrog.configuration.JFrogPlatformBuilder;
 import io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
@@ -56,8 +55,8 @@ public class ArtifactoryInstaller extends BinaryInstaller {
                     // Getting credentials
                     // We sent a null item to 'credentialsLookup' since we do not know which job will be running at the time of installation, and we don't have the relevant 'Run' object yet.
                     // Therefore, when downloading the CLI from the user's Artifactory remote repository, we should use global credentials.
-                    Credentials credentials = PluginsUtils.credentialsLookup(id, null);
-                    jfrogPlatformInstance.setCredentialsConfig(new CredentialsConfig(id, credentials));
+                    String credentialsId = jfrogPlatformInstance.getCredentialsConfig().getCredentialsId();
+                    jfrogPlatformInstance.setCredentialsConfig(new CredentialsConfig(credentialsId, PluginsUtils.credentialsLookup(credentialsId, null)));
                     return jfrogPlatformInstance;
                 }
             }
