@@ -1,5 +1,9 @@
 name: Tests
-on: [ push, pull_request ]
+on:
+  push:
+  # Triggers the workflow on labeled PRs only.
+  pull_request_target:
+    types: [labeled]
 
 jobs:
   Jenkins-JFrog-Plugin-Tests:
