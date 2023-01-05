@@ -37,7 +37,7 @@ If your agent has  access to the internet, you can set the installer to automati
 ### Automatic installation from Artifactory
 If your agent cannot access the internet, you can set the installer to automatically download JFrog CLI from the JFrog instance you configured in Manage Jenkins | Configure System as shown in the below screenshot. To set this up, follow these steps:
 
-1. Create a remote repository in Artifactory for downloading JFrog CLI. You can name the repository **jfrog-cli-remote**. This is the name we'll be using here, but you can also choose a different name for the repository. Set the repository URL to https://releases.jfrog.io/artifactory/jfrog-cli/v2-jf/
+1. Create a remote repository in Artifactory for downloading JFrog CLI. You can name the repository **jfrog-cli-remote**. This is the name we'll be using here, but you can also choose a different name for the repository. Set the repository URL to https://releases.jfrog.io/artifactory/jfrog-cli/
 
 2. In **Manage Jenkins | Global Tool Configuration** select the Install from Artifactory option as shown in the screenshot below.<br><img src="images/readme/automatic-installation-from-rt-1.png" width="30%">
 
