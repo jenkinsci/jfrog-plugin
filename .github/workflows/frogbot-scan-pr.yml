@@ -25,6 +25,8 @@ jobs:
 
       - uses: jfrog/frogbot@v2
         env:
+          JFROG_CLI_HOME_DIR: /home/runner/work
+
           # [Mandatory]
           # JFrog platform URL (This functionality requires version 3.29.0 or above of Xray)
           JF_URL: ${{ secrets.FROGBOT_URL }}
