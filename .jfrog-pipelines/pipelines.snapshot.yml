@@ -53,8 +53,8 @@ pipelines:
             - jf rt bp
 
             # Distribute release bundle
-            - jf ds rbc jfrog-jenkins-plugin-snapshot $run_number --spec=./.jfrog-pipelines/specs/dev-rbc-filespec.json --sign
-            - jf ds rbd jfrog-jenkins-plugin-snapshot $run_number --site="releases.jfrog.io" --sync
+            - jf ds rbc ecosystem-jfrog-jenkins-plugin-snapshot $run_number --spec=./.jfrog-pipelines/specs/dev-rbc-filespec.json --sign
+            - jf ds rbd ecosystem-jfrog-jenkins-plugin-snapshot $run_number --site="releases.jfrog.io" --sync
 
           onComplete:
             # Save .m2 cache
