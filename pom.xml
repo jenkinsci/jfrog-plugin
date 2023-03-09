@@ -9,7 +9,7 @@
     </parent>
 
     <properties>
-        <jenkins.version>2.361.4</jenkins.version>
+        <jenkins.version>2.361</jenkins.version>
         <skipITs>true</skipITs>
         <buildinfo.version>2.37.2</buildinfo.version>
     </properties>
