@@ -18,9 +18,9 @@ public class JFrogPlatformInstance implements Serializable {
     private CredentialsConfig credentialsConfig;
 
     @DataBoundConstructor
-    public JFrogPlatformInstance(String serverId, String platformUrl, CredentialsConfig credentialsConfig, String artifactoryUrl, String distributionUrl, String xrayUrl) {
+    public JFrogPlatformInstance(String serverId, String url, CredentialsConfig credentialsConfig, String artifactoryUrl, String distributionUrl, String xrayUrl) {
         this.id = serverId;
-        this.url = StringUtils.isNotEmpty(platformUrl) ? StringUtils.removeEnd(platformUrl, "/") : null;
+        this.url = StringUtils.isNotEmpty(url) ? StringUtils.removeEnd(url, "/") : null;
         this.credentialsConfig = credentialsConfig;
         this.artifactoryUrl = addUrlSuffix(artifactoryUrl, this.url, "artifactory");
         this.distributionUrl = addUrlSuffix(distributionUrl, this.url, "distribution");

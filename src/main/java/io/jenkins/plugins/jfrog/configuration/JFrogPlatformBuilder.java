@@ -89,10 +89,10 @@ public class JFrogPlatformBuilder extends GlobalConfiguration {
 
         @POST
         @SuppressWarnings("unused")
-        public FormValidation doCheckPlatformUrl(@QueryParameter String value) {
+        public FormValidation doCheckUrl(@QueryParameter String value) {
             Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             if (StringUtils.isBlank(value)) {
-                return FormValidation.error("Please set platform URL");
+                return FormValidation.error("Please set the JFrog Platform URL");
             }
             return checkUrlInForm(value);
         }
@@ -119,7 +119,7 @@ public class JFrogPlatformBuilder extends GlobalConfiguration {
         }
 
         /**
-         * Performs on-the-fly validation of the form fields 'platformUrl', 'artifactoryUrl', 'distributionUrl', or 'xrayUrl'.
+         * Performs on-the-fly validation of the form fields 'url', 'artifactoryUrl', 'distributionUrl', or 'xrayUrl'.
          *
          * @param value the URL value that the user has typed.
          * @return the outcome of the validation. This is sent to the browser.
@@ -160,7 +160,7 @@ public class JFrogPlatformBuilder extends GlobalConfiguration {
             }
 
             if (isEmptyUrl(jfrogInstances)) {
-                throw new FormException("Please set the The JFrog Platform URL", "URL");
+                throw new FormException("Please set the JFrog Platform URL", "URL");
             }
 
             for (JFrogPlatformInstance jfrogInstance : jfrogInstances) {
