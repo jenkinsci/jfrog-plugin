@@ -8,12 +8,9 @@ import hudson.tools.ToolInstaller;
 import hudson.tools.ToolInstallerDescriptor;
 import io.jenkins.plugins.jfrog.callables.JFrogCliDownloader;
 import io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
-import org.jfrog.build.client.ProxyConfiguration;
+import io.jenkins.plugins.jfrog.configuration.JenkinsProxyConfiguration;
 
 import java.io.IOException;
-
-import static io.jenkins.plugins.jfrog.Utils.createProxyConfiguration;
-
 
 /**
  * Installer for JFrog CLI binary.
@@ -51,7 +48,7 @@ public abstract class BinaryInstaller extends ToolInstaller {
     }
 
     public static FilePath performJfrogCliInstallation(FilePath toolLocation, TaskListener log, String version, JFrogPlatformInstance instance, String repository, String binaryName) throws IOException, InterruptedException {
-        ProxyConfiguration proxyConfiguration = createProxyConfiguration();
+        JenkinsProxyConfiguration proxyConfiguration = new JenkinsProxyConfiguration();
         // Download Jfrog CLI binary
         toolLocation.act(new JFrogCliDownloader(proxyConfiguration, version, instance, log, repository, binaryName));
         return toolLocation;

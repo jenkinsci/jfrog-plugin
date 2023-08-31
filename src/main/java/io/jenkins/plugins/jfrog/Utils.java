@@ -3,11 +3,8 @@ package io.jenkins.plugins.jfrog;
 import hudson.FilePath;
 import hudson.model.Job;
 import hudson.model.TaskListener;
-import hudson.util.Secret;
 import io.jenkins.plugins.jfrog.callables.TempDirCreator;
-import jenkins.model.Jenkins;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.jfrog.build.client.ProxyConfiguration;
 
 import java.io.IOException;
 
@@ -65,23 +62,5 @@ public class Utils {
 
     public static FilePath createAndGetJfrogCliHomeTempDir(final FilePath ws, String buildNumber) throws IOException, InterruptedException {
         return createAndGetTempDir(ws).child(buildNumber).child(".jfrog");
-    }
-
-    /**
-     * Get the proxy configuration from Jenkins and create a proxy configuration suitable to the ArtifactoryManager.
-     *
-     * @return the proxy configuration
-     */
-    public static ProxyConfiguration createProxyConfiguration() {
-        hudson.ProxyConfiguration proxy = Jenkins.get().getProxy();
-        if (proxy == null) {
-            return null;
-        }
-        ProxyConfiguration proxyConfiguration = new ProxyConfiguration();
-        proxyConfiguration.host = proxy.getName();
-        proxyConfiguration.port = proxy.getPort();
-        proxyConfiguration.username = proxy.getUserName();
-        proxyConfiguration.password = Secret.toString(proxy.getSecretPassword());
-        return proxyConfiguration;
     }
 }

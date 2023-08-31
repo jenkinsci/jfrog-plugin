@@ -6,11 +6,11 @@ import hudson.util.Secret;
 import io.jenkins.plugins.jfrog.JenkinsBuildInfoLog;
 import io.jenkins.plugins.jfrog.OsUtils;
 import io.jenkins.plugins.jfrog.configuration.JFrogPlatformInstance;
+import io.jenkins.plugins.jfrog.configuration.JenkinsProxyConfiguration;
 import jenkins.MasterToSlaveFileCallable;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
-import org.jfrog.build.client.ProxyConfiguration;
 import org.jfrog.build.extractor.clientConfiguration.client.artifactory.ArtifactoryManager;
 
 import java.io.File;
@@ -39,7 +39,7 @@ public class JFrogCliDownloader extends MasterToSlaveFileCallable<Void> {
      */
     private static final String RELEASE = "[RELEASE]";
 
-    ProxyConfiguration proxyConfiguration;
+    JenkinsProxyConfiguration proxyConfiguration;
     private String providedVersion;
     JFrogPlatformInstance instance;
     private TaskListener log;
@@ -55,18 +55,19 @@ public class JFrogCliDownloader extends MasterToSlaveFileCallable<Void> {
         JenkinsBuildInfoLog buildInfoLog = new JenkinsBuildInfoLog(log);
 
         // Downloading binary from Artifactory
-        try (ArtifactoryManager manager = new ArtifactoryManager(instance.inferArtifactoryUrl(), Secret.toString(instance.getCredentialsConfig().getUsername()),
+        String artifactoryUrl = instance.inferArtifactoryUrl();
+        try (ArtifactoryManager manager = new ArtifactoryManager(artifactoryUrl, Secret.toString(instance.getCredentialsConfig().getUsername()),
                 Secret.toString(instance.getCredentialsConfig().getPassword()), Secret.toString(instance.getCredentialsConfig().getAccessToken()), buildInfoLog)) {
-            if (proxyConfiguration != null) {
+            if (proxyConfiguration.isProxyConfigured(artifactoryUrl)) {
                 manager.setProxyConfiguration(proxyConfiguration);
             }
             // Getting updated cli binary's sha256 form Artifactory.
             String artifactorySha256 = getArtifactSha256(manager, cliUrlSuffix);
             if (shouldDownloadTool(toolLocation, artifactorySha256)) {
                 if (version.equals(RELEASE)) {
-                    log.getLogger().printf("Download '%s' latest version from: %s%n", binaryName, instance.inferArtifactoryUrl() + cliUrlSuffix);
+                    log.getLogger().printf("Download '%s' latest version from: %s%n", binaryName, artifactoryUrl + cliUrlSuffix);
                 } else {
-                    log.getLogger().printf("Download '%s' version %s from: %s%n", binaryName, version, instance.inferArtifactoryUrl() + cliUrlSuffix);
+                    log.getLogger().printf("Download '%s' version %s from: %s%n", binaryName, version, artifactoryUrl + cliUrlSuffix);
                 }
                 File downloadResponse = manager.downloadToFile(cliUrlSuffix, new File(toolLocation, binaryName).getPath());
                 if (!downloadResponse.setExecutable(true)) {
