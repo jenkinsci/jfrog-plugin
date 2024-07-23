@@ -1,0 +1,21 @@
+name: Jenkins Security Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types: [labeled]
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+  contents: read
+  actions: read
+
+jobs:
+  security-scan:
+    if: (contains(github.event.pull_request.labels.*.name, 'safe to test') || github.event_name == 'push') && github.repository_owner != 'jenkinsci'
+    uses: jenkins-infra/jenkins-security-scan/.github/workflows/jenkins-security-scan.yaml@v2
+    with:
+      java-cache: 'maven'
