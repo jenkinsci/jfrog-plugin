@@ -30,6 +30,7 @@ import org.jfrog.build.api.util.Log;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,6 +48,7 @@ import static org.jfrog.build.extractor.BuildInfoExtractorUtils.createMapper;
 public class JfStep extends Builder implements SimpleBuildStep {
     private final ObjectMapper mapper = createMapper();
     static final String STEP_NAME = "jf";
+    private static final String MIN_CLI_VERSION_PASSWORD_STDIN ="2.31.0";
     protected String[] args;
 
     @DataBoundConstructor
@@ -197,7 +199,7 @@ public class JfStep extends Builder implements SimpleBuildStep {
             for (JFrogPlatformInstance jfrogPlatformInstance : jfrogInstances) {
                 // Build 'jf' command
                 ArgumentListBuilder builder = new ArgumentListBuilder();
-                addConfigArguments(builder, jfrogPlatformInstance, jfrogBinaryPath, job);
+                addConfigArguments(builder, jfrogPlatformInstance, jfrogBinaryPath, job, launcher);
                 if (isWindows) {
                     builder = builder.toWindowsCommand();
                 }
@@ -210,7 +212,7 @@ public class JfStep extends Builder implements SimpleBuildStep {
         }
     }
 
-    private void addConfigArguments(ArgumentListBuilder builder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath, Job<?, ?> job) {
+    private void addConfigArguments(ArgumentListBuilder builder, JFrogPlatformInstance jfrogPlatformInstance, String jfrogBinaryPath, Job<?, ?> job, Launcher.ProcStarter launcher) throws IOException, InterruptedException {
         String credentialsId = jfrogPlatformInstance.getCredentialsConfig().getCredentialsId();
         builder.add(jfrogBinaryPath).add("c").add("add").add(jfrogPlatformInstance.getId());
         // Add credentials
@@ -220,7 +222,15 @@ public class JfStep extends Builder implements SimpleBuildStep {
         } else {
             Credentials credentials = PluginsUtils.credentialsLookup(credentialsId, job);
             builder.add("--user=" + credentials.getUsername());
-            builder.addMasked("--password=" + credentials.getPassword());
+            String cliVersion = getJfrogCliVersion(launcher, launcher.pwd());
+            // Use password-stdin if available
+            if (isCliVersionGreaterThan(cliVersion, MIN_CLI_VERSION_PASSWORD_STDIN)) {
+                builder.add("--password-stdin=");
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(credentials.getPassword().getPlainText().getBytes());
+                launcher.stdin(inputStream);
+            } else {
+                builder.addMasked("--password=" + credentials.getPassword());
+            }
         }
         // Add URLs
         builder.add("--url=" + jfrogPlatformInstance.getUrl());
@@ -293,5 +303,33 @@ public class JfStep extends Builder implements SimpleBuildStep {
         public boolean isApplicable(Class<? extends AbstractProject> jobType) {
             return true;
         }
+    }
+
+    private String getJfrogCliVersion(Launcher.ProcStarter launcher, FilePath workspace) throws IOException, InterruptedException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int exitCode = launcher.cmds("jf", "--version")
+                .pwd(workspace)
+                .stdout(outputStream)
+                .join();
+        if (exitCode != 0) {
+            throw new IOException("Failed to get JFrog CLI version");
+        }
+        String versionOutput = outputStream.toString(StandardCharsets.UTF_8).trim();
+        return versionOutput.split(" ")[2]; // Assuming the version is the third word in the output
+    }
+
+    private boolean isCliVersionGreaterThan(String currentVersion, String targetVersion) {
+        String[] currentParts = currentVersion.split("\\.");
+        String[] targetParts = targetVersion.split("\\.");
+        for (int i = 0; i < Math.min(currentParts.length, targetParts.length); i++) {
+            int currentPart = Integer.parseInt(currentParts[i]);
+            int targetPart = Integer.parseInt(targetParts[i]);
+            if (currentPart > targetPart) {
+                return true;
+            } else if (currentPart < targetPart) {
+                return false;
+            }
+        }
+        return currentParts.length > targetParts.length;
     }
 }
