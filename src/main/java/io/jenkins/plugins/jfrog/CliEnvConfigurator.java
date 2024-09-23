@@ -66,7 +66,7 @@ public class CliEnvConfigurator {
         env.put(HTTP_PROXY_ENV, proxyUrl);
         env.put(HTTPS_PROXY_ENV, proxyUrl);
         if (StringUtils.isNotBlank(proxyConfiguration.noProxy)) {
-            env.put(NO_PROXY, proxyConfiguration.noProxy);
+            env.put(NO_PROXY, createNoProxyValue(proxyConfiguration.noProxy));
         }
     }
 
@@ -78,5 +78,18 @@ public class CliEnvConfigurator {
     private static void excludeProxyEnvFromPublishing(EnvVars env) {
         String jfrogCliEnvExclude = env.getOrDefault(JFROG_CLI_ENV_EXCLUDE, JFROG_CLI_DEFAULT_EXCLUSIONS);
         env.put(JFROG_CLI_ENV_EXCLUDE, String.join(";", jfrogCliEnvExclude, HTTP_PROXY_ENV, HTTPS_PROXY_ENV));
+    }
+
+    /**
+     * Converts a list of No Proxy Hosts received by Jenkins into a semicolon-separated string format expected by JFrog CLI.
+     *
+     * @param noProxy - A string representing the list of No Proxy Hosts.
+     * @return A semicolon-separated string of No Proxy Hosts.
+     */
+    static String createNoProxyValue(String noProxy) {
+        // Trim leading and trailing spaces, Replace '|' with spaces and normalize whitespace
+        String noProxyListRemoveSpaceAndPipe = noProxy.trim().replaceAll("[\\s|]+", ";");
+        // Replace multiple semicolon with a single semicolon, and remove the last one if present
+        return noProxyListRemoveSpaceAndPipe.replaceAll(";+", ";").replaceAll("^;|;$", "");
     }
 }
