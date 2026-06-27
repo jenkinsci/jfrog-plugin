@@ -7,6 +7,8 @@ import io.jenkins.plugins.jfrog.configuration.JenkinsProxyConfiguration;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Configures JFrog CLI environment variables for the job.
@@ -67,8 +69,9 @@ public class CliEnvConfigurator {
         // Add HTTP or HTTPS protocol according to the port
         String proxyUrl = proxyConfiguration.port == 443 ? "https://" : "http://";
         if (!StringUtils.isAnyBlank(proxyConfiguration.username, proxyConfiguration.password)) {
-            // Add username and password, if provided
-            proxyUrl += proxyConfiguration.username + ":" + proxyConfiguration.password + "@";
+            // Add username and password, if provided. URL-encode them, since they may contain
+            // characters (e.g. '#', '@', ':') that are otherwise ambiguous in a URL's userinfo part.
+            proxyUrl += urlEncode(proxyConfiguration.username) + ":" + urlEncode(proxyConfiguration.password) + "@";
             excludeProxyEnvFromPublishing(env);
         }
         proxyUrl += proxyConfiguration.host + ":" + proxyConfiguration.port;
@@ -77,6 +80,18 @@ public class CliEnvConfigurator {
         if (StringUtils.isNotBlank(proxyConfiguration.noProxy)) {
             env.put(NO_PROXY, createNoProxyValue(proxyConfiguration.noProxy));
         }
+    }
+
+    /**
+     * URL-encodes a proxy userinfo component (username or password), so that characters such as
+     * '#', '@' and ':' don't get interpreted as URL syntax when embedded in the proxy URL.
+     *
+     * @param value - The username or password to encode
+     * @return the URL-encoded value, with '+' (used by {@link URLEncoder} for spaces) replaced by
+     * the more broadly compatible '%20'.
+     */
+    private static String urlEncode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
     /**
