@@ -64,6 +64,17 @@ public class CliEnvConfiguratorProxyTest extends CliEnvConfiguratorTest {
     }
 
     @Test
+    public void configureCliEnvHttpProxyAuthSpecialCharsTest() throws IOException, InterruptedException {
+        proxyConfiguration.port = 80;
+        proxyConfiguration.username = "my#user";
+        proxyConfiguration.password = "my#p@ssword";
+        invokeConfigureCliEnv();
+        assertEnv(envVars, HTTP_PROXY_ENV, "http://my%23user:my%23p%40ssword@acme.proxy.io:80");
+        assertEnv(envVars, HTTPS_PROXY_ENV, "http://my%23user:my%23p%40ssword@acme.proxy.io:80");
+        assertEnv(envVars, JFROG_CLI_ENV_EXCLUDE, String.join(";", JFROG_CLI_DEFAULT_EXCLUSIONS, HTTP_PROXY_ENV, HTTPS_PROXY_ENV));
+    }
+
+    @Test
     public void configureCliEnvNoOverrideHttpTest() throws IOException, InterruptedException {
         envVars.put(HTTP_PROXY_ENV, "http://acme2.proxy.io:777");
         invokeConfigureCliEnv();
